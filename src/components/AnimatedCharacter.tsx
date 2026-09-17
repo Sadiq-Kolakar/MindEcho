@@ -38,7 +38,7 @@ export function AnimatedCharacter() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         onClick={handleRobotClick}
-        className="glass-strong relative z-30 mb-3 flex items-center gap-3.5 rounded-2xl border border-[#e8c89b]/40 px-5 py-3 shadow-2xl backdrop-blur-xl transition hover:border-[#e8c89b] hover:bg-[#2b2421]/95 cursor-pointer max-w-md w-full"
+        className="glass-strong relative z-30 mb-2 flex items-center gap-3.5 rounded-2xl border border-[#e8c89b]/40 px-5 py-3 shadow-2xl backdrop-blur-xl transition hover:border-[#e8c89b] hover:bg-[#2b2421]/95 cursor-pointer max-w-md w-full"
       >
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#e8c89b]/20 border border-[#e8c89b]/50">
           <Bot className="h-5 w-5 text-[#e8c89b]" />
@@ -71,18 +71,18 @@ export function AnimatedCharacter() {
         <div className="absolute -bottom-2 left-10 h-4 w-4 rotate-45 border-b border-r border-[#e8c89b]/30 bg-[#2b2421]" />
       </motion.div>
 
-      {/* 3D Spline Robot Container (Full Body View from Head to Legs) */}
+      {/* 3D Spline Robot Container (Perfect Fit from Head to Legs) */}
       <motion.div
-        whileHover={{ scale: 1.025 }}
+        whileHover={{ scale: 1.02 }}
         transition={{ type: 'spring', stiffness: 220, damping: 22 }}
         onClick={handleRobotClick}
-        className="relative w-full h-[580px] sm:h-[640px] flex items-center justify-center group cursor-grab active:cursor-grabbing"
+        className="relative w-full h-[480px] sm:h-[540px] flex items-center justify-center group cursor-grab active:cursor-grabbing"
       >
         {/* Smooth Ambient Warm Studio Radial Glow - Intensifies on Hover */}
-        <div className="absolute inset-0 mx-auto my-auto h-[480px] w-[480px] rounded-full bg-[radial-gradient(circle,rgba(232,200,155,0.22)_0%,rgba(232,200,155,0.08)_50%,transparent_75%)] pointer-events-none transition-all duration-500 group-hover:scale-115 group-hover:bg-[radial-gradient(circle,rgba(232,200,155,0.45)_0%,rgba(232,200,155,0.18)_55%,transparent_80%)] blur-3xl" />
+        <div className="absolute inset-0 mx-auto my-auto h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,200,155,0.25)_0%,rgba(232,200,155,0.08)_50%,transparent_75%)] pointer-events-none transition-all duration-500 group-hover:scale-115 group-hover:bg-[radial-gradient(circle,rgba(232,200,155,0.45)_0%,rgba(232,200,155,0.18)_55%,transparent_80%)] blur-3xl" />
 
-        {/* Real Interactive 3D Spline Robot Scene (Framed for Full Head-to-Legs View) */}
-        <div className="w-full h-full relative z-10 scale-100 sm:scale-105 translate-y-0 transition-transform duration-500">
+        {/* Real Interactive 3D Spline Robot Scene - Scaled to fit 100% full body (head, torso, legs) */}
+        <div className="w-full h-full relative z-10 scale-85 sm:scale-90 origin-center transition-transform duration-500">
           <SplineScene
             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
             className="w-full h-full"
