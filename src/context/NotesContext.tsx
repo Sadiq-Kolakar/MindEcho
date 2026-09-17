@@ -45,10 +45,16 @@ export interface ImportantDateItem {
   description?: string
 }
 
+export type StudyModeType = 'exam' | 'skill'
+
 interface NotesContextValue {
   notes: NoteItem[]
   explanations: PracticeExplanation[]
   importantDates: ImportantDateItem[]
+  studyMode: StudyModeType
+  examTargetDate: string
+  examTitle: string
+  setStudyMode: (mode: StudyModeType, date?: string, title?: string) => void
   activeNoteId: string | null
   setActiveNoteId: (id: string | null) => void
   addNote: (note: Omit<NoteItem, 'id' | 'createdAt' | 'updatedAt' | 'practiceCount' | 'retentionHealth'>) => NoteItem
@@ -265,6 +271,33 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }
   })
 
+  const [studyMode, setStudyModeState] = useState<StudyModeType>(() => {
+    try {
+      const saved = localStorage.getItem('memoroute_study_mode')
+      return saved ? (saved as StudyModeType) : 'exam'
+    } catch {
+      return 'exam'
+    }
+  })
+
+  const [examTargetDate, setExamTargetDate] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('memoroute_exam_target_date')
+      return saved || '2026-09-25'
+    } catch {
+      return '2026-09-25'
+    }
+  })
+
+  const [examTitle, setExamTitle] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('memoroute_exam_title')
+      return saved || 'Final CS Midterm Exam ⭐'
+    } catch {
+      return 'Final CS Midterm Exam ⭐'
+    }
+  })
+
   const [activeNoteId, setActiveNoteId] = useState<string | null>('note-1')
 
   // Save changes to localStorage
@@ -279,6 +312,25 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(importantDates))
   }, [importantDates])
+
+  useEffect(() => {
+    localStorage.setItem('memoroute_study_mode', studyMode)
+  }, [studyMode])
+
+  useEffect(() => {
+    localStorage.setItem('memoroute_exam_target_date', examTargetDate)
+  }, [examTargetDate])
+
+  useEffect(() => {
+    localStorage.setItem('memoroute_exam_title', examTitle)
+  }, [examTitle])
+
+  // Set Study Mode helper
+  const setStudyMode = useCallback((mode: StudyModeType, date?: string, title?: string) => {
+    setStudyModeState(mode)
+    if (date) setExamTargetDate(date)
+    if (title) setExamTitle(title)
+  }, [])
 
   // Add new note
   const addNote = useCallback(
@@ -346,9 +398,18 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       const topicName = targetNote ? targetNote.title : 'Custom Practice'
       const subjectName = targetNote ? targetNote.subject : 'General'
 
-      // Calculate next review date (e.g. +3 days)
+      // Calculate next review interval based on Exam Mode vs Skill Mode
+      let daysAdd = 3
+      if (studyMode === 'exam' && examTargetDate) {
+        const todayMs = new Date().getTime()
+        const examMs = new Date(examTargetDate).getTime()
+        const daysLeft = Math.max(1, Math.ceil((examMs - todayMs) / (1000 * 60 * 60 * 24)))
+        // In Exam Mode, compress revision interval into 1 to 2 days before exam!
+        daysAdd = Math.max(1, Math.min(2, Math.floor(daysLeft / 3)))
+      }
+
       const nextDate = new Date()
-      nextDate.setDate(nextDate.getDate() + 3)
+      nextDate.setDate(nextDate.getDate() + daysAdd)
       const nextReviewStr = nextDate.toISOString().split('T')[0]
 
       // 1. Update Note Score & Retention
@@ -386,7 +447,7 @@ export function NotesProvider({ children }: { children: ReactNode }) {
 
       setExplanations((prev) => [newExplanation, ...prev])
     },
-    [notes],
+    [notes, studyMode, examTargetDate],
   )
 
   // Compute live averages for Dashboard
@@ -411,6 +472,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       notes,
       explanations,
       importantDates,
+      studyMode,
+      examTargetDate,
+      examTitle,
+      setStudyMode,
       activeNoteId,
       setActiveNoteId,
       addNote,
@@ -427,6 +492,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
       notes,
       explanations,
       importantDates,
+      studyMode,
+      examTargetDate,
+      examTitle,
+      setStudyMode,
       activeNoteId,
       addNote,
       updateNote,

@@ -22,12 +22,26 @@ import { useNotes } from '../context/NotesContext'
 
 export function AdaptiveCalendar() {
   const { isAuthenticated } = useAuth()
-  const { notes, importantDates, addImportantDate, deleteImportantDate } = useNotes()
+  const {
+    notes,
+    importantDates,
+    studyMode,
+    examTargetDate,
+    examTitle,
+    setStudyMode,
+    addImportantDate,
+    deleteImportantDate,
+  } = useNotes()
   const navigate = useNavigate()
 
   // Selected date state (defaults to today '2026-09-18')
   const todayStr = '2026-09-18'
   const [selectedDate, setSelectedDate] = useState<string>(todayStr)
+
+  // Exam settings state for modal/inline editing
+  const [showExamModal, setShowExamModal] = useState(false)
+  const [tempExamDate, setTempExamDate] = useState(examTargetDate)
+  const [tempExamTitle, setTempExamTitle] = useState(examTitle)
 
   // Current view month/year
   const [currentMonth, setCurrentMonth] = useState(8) // 0-indexed: 8 = September
@@ -45,6 +59,13 @@ export function AdaptiveCalendar() {
     navigate('/login', { replace: true })
     return null
   }
+
+  // Calculate days remaining until exam
+  const daysUntilExam = (() => {
+    const tMs = new Date(todayStr).getTime()
+    const eMs = new Date(examTargetDate).getTime()
+    return Math.max(0, Math.ceil((eMs - tMs) / (1000 * 60 * 60 * 24)))
+  })()
 
   // Days in month calculation
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
@@ -98,6 +119,13 @@ export function AdaptiveCalendar() {
     setShowAddModal(false)
   }
 
+  // Handle Save Exam Date Settings
+  const handleSaveExamSettings = (e: React.FormEvent) => {
+    e.preventDefault()
+    setStudyMode('exam', tempExamDate, tempExamTitle)
+    setShowExamModal(false)
+  }
+
   // Helper for date string formatting YYYY-MM-DD
   const formatDateStr = (dayNum: number) => {
     const m = String(currentMonth + 1).padStart(2, '0')
@@ -120,13 +148,13 @@ export function AdaptiveCalendar() {
               <ArrowLeft className="h-4 w-4" /> Back to Dashboard
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-              <span>Adaptive Spaced Repetition Calendar</span>
+              <span>Adaptive Calendar &amp; Mode Hub</span>
               <span className="rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 px-3 py-1 text-xs font-bold text-[#e8c89b]">
                 {totalDueToday.length} Due Today
               </span>
             </h1>
             <p className="mt-1 text-xs text-[#f5efe8]/70">
-              LECTOR AI schedules topics based on your memory retention decay curve. Mark exam milestones and practice due items out loud.
+              Switch between Exam Mode (accelerated deadline revisions) and Skill Mode (lifelong learning with no time limit).
             </p>
           </div>
 
@@ -140,6 +168,82 @@ export function AdaptiveCalendar() {
             </button>
           </div>
         </div>
+
+        {/* ================= STUDY MODE SELECTOR CARD ================= */}
+        <GlassCard dark className="mb-8 p-6 border border-[#e8c89b]/40 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#e8c89b] flex items-center gap-2 mb-1">
+                <Brain className="h-4 w-4" /> Active Spaced Learning Strategy:
+              </span>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                {studyMode === 'exam' ? (
+                  <>
+                    <span>🎓 Exam Mode (Accelerated Revisions)</span>
+                    <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-0.5 text-xs text-amber-300 font-bold">
+                      {daysUntilExam} Days Left Until Exam
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span>🧠 Skill Mastery Mode (No Time Limit)</span>
+                    <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-0.5 text-xs text-emerald-300 font-bold">
+                      Lifelong Spaced Repetition
+                    </span>
+                  </>
+                )}
+              </h2>
+              <p className="mt-1 text-xs text-white/70 max-w-2xl">
+                {studyMode === 'exam'
+                  ? `Your revision frequency is automatically compressed to review all topics before your exam target (${examTitle} on ${examTargetDate}).`
+                  : 'No strict exam deadlines. Revisions expand gradually over time to maximize long-term retention.'}
+              </p>
+            </div>
+
+            {/* Mode Switcher Toggle Buttons */}
+            <div className="flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 p-1.5 backdrop-blur-md">
+              <button
+                onClick={() => setStudyMode('exam', examTargetDate, examTitle)}
+                className={`rounded-xl px-4 py-2.5 text-xs font-bold transition flex items-center gap-2 ${
+                  studyMode === 'exam'
+                    ? 'bg-[#e8c89b] text-[#1e1917] shadow-lg'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <span>🎓 Exam Mode</span>
+              </button>
+
+              <button
+                onClick={() => setStudyMode('skill')}
+                className={`rounded-xl px-4 py-2.5 text-xs font-bold transition flex items-center gap-2 ${
+                  studyMode === 'skill'
+                    ? 'bg-[#e8c89b] text-[#1e1917] shadow-lg'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <span>🧠 Skill Mode</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Exam Target Date Configuration Sub-bar when in Exam Mode */}
+          {studyMode === 'exam' && (
+            <div className="mt-5 border-t border-white/10 pt-4 flex flex-wrap items-center justify-between gap-4 text-xs">
+              <div className="flex items-center gap-3">
+                <span className="text-[#e8c89b] font-bold">Target Exam:</span>
+                <span className="text-white font-semibold">{examTitle}</span>
+                <span className="text-white/60">({examTargetDate})</span>
+              </div>
+
+              <button
+                onClick={() => setShowExamModal(true)}
+                className="glass rounded-full px-4 py-1.5 text-xs font-bold text-[#e8c89b] hover:bg-white/10"
+              >
+                ⚙️ Change Exam Date / Target
+              </button>
+            </div>
+          )}
+        </GlassCard>
 
         {/* Top Summary Widgets Grid */}
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
@@ -156,39 +260,41 @@ export function AdaptiveCalendar() {
               {totalDueToday.length > 0 ? `${totalDueToday.length} Topics Ready` : 'All Topics Up To Date 🎉'}
             </p>
             <p className="mt-1 text-[11px] text-white/60">
-              Scheduled by your cognitive retention score
+              {studyMode === 'exam' ? 'Compressed for exam readiness' : 'Scheduled by retention decay curve'}
             </p>
           </GlassCard>
 
           <GlassCard dark className="p-5 border border-white/15 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-[#e8c89b] flex items-center gap-1.5">
-                <Star className="h-4 w-4 fill-[#e8c89b]" /> Marked Important Dates
+                <Star className="h-4 w-4 fill-[#e8c89b]" /> Exam Target Date
               </span>
               <span className="rounded-full bg-[#e8c89b]/20 px-2.5 py-0.5 text-xs font-bold text-[#e8c89b]">
-                {importantDates.length} Events
+                {daysUntilExam} Days Left
               </span>
             </div>
             <p className="mt-2 text-2xl font-bold text-white">
-              {importantDates[0]?.title || 'No upcoming exam'}
+              {examTargetDate}
             </p>
-            <p className="mt-1 text-[11px] text-white/60">
-              Exams, quizzes, and priority milestones
+            <p className="mt-1 text-[11px] text-white/60 truncate">
+              {examTitle}
             </p>
           </GlassCard>
 
           <GlassCard dark className="p-5 border border-white/15 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
-                <Brain className="h-4 w-4" /> Spaced Repetition Engine
+                <Brain className="h-4 w-4" /> Revision Frequency Ratio
               </span>
               <span className="rounded-full bg-blue-500/20 px-2.5 py-0.5 text-xs font-bold text-blue-300">
-                Active
+                {studyMode === 'exam' ? '2.5x Speed' : 'Standard'}
               </span>
             </div>
-            <p className="mt-2 text-2xl font-bold text-white">SuperMemo SM-2 Calibrated</p>
+            <p className="mt-2 text-2xl font-bold text-white">
+              {studyMode === 'exam' ? 'Accelerated (1-2 Days)' : 'Expanding (3-14 Days)'}
+            </p>
             <p className="mt-1 text-[11px] text-white/60">
-              Optimal revision interval multiplier: 2.5x
+              {studyMode === 'exam' ? 'Ensures completion before exam date' : 'Optimized for long-term memory'}
             </p>
           </GlassCard>
         </div>
@@ -560,6 +666,81 @@ export function AdaptiveCalendar() {
 
                   <ShinyButton
                     label="Save Event Date ⭐"
+                    onClick={() => {}}
+                    accentColor="#e8c89b"
+                    accentSoftColor="#f5efe8"
+                    fillColor="#2b2421"
+                    cornerRadius={9999}
+                    className="px-5 py-2 text-xs font-bold"
+                  />
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+
+        {/* ================= EDIT EXAM TARGET MODAL ================= */}
+        {showExamModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-md rounded-3xl border border-white/20 bg-[#1e1917] p-6 shadow-2xl"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <span>🎓 Set Target Exam &amp; Date</span>
+                </h3>
+                <button
+                  onClick={() => setShowExamModal(false)}
+                  className="text-xs text-white/60 hover:text-white"
+                >
+                  ✕ Close
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveExamSettings} className="space-y-4">
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase text-[#e8c89b]">
+                    Exam Name / Course Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={tempExamTitle}
+                    onChange={(e) => setTempExamTitle(e.target.value)}
+                    placeholder="e.g. Final CS Midterm Exam ⭐"
+                    className="glass w-full rounded-2xl border border-white/15 px-4 py-2.5 text-xs text-white outline-none focus:border-[#e8c89b]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-semibold uppercase text-[#e8c89b]">
+                    Exam Target Date
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={tempExamDate}
+                    onChange={(e) => setTempExamDate(e.target.value)}
+                    className="glass w-full rounded-2xl border border-white/15 px-4 py-2.5 text-xs text-white outline-none focus:border-[#e8c89b]"
+                  />
+                  <p className="mt-1 text-[11px] text-white/50">
+                    Entering your exam date accelerates revision frequencies to ensure all topics are completed before this date.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowExamModal(false)}
+                    className="rounded-full px-4 py-2 text-xs font-semibold text-white/60 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+
+                  <ShinyButton
+                    label="Activate Accelerated Exam Mode 🎓"
                     onClick={() => {}}
                     accentColor="#e8c89b"
                     accentSoftColor="#f5efe8"
