@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
-import { Play } from 'lucide-react'
+import { Play, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatedCharacter } from './AnimatedCharacter'
 import { ShinyButton } from './ui/shiny-button'
+
+const avatars = ['A', 'R', 'S', 'K', 'M']
 
 export function Hero() {
   const navigate = useNavigate()
@@ -29,6 +31,14 @@ export function Hero() {
           transition={{ duration: 0.7 }}
           className="text-left"
         >
+          {/* Top Pill Badge */}
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#e8c89b]/30 bg-[#e8c89b]/10 px-3.5 py-1.5 backdrop-blur-md">
+            <Sparkles className="h-3.5 w-3.5 text-[#e8c89b]" />
+            <span className="text-xs font-semibold tracking-wider text-[#e8c89b] uppercase">
+              Next-Gen Active Memory Platform
+            </span>
+          </div>
+
           <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
             Understand Today.
             <br />
@@ -39,7 +49,7 @@ export function Hero() {
 
           <p className="mb-8 max-w-lg text-base leading-relaxed text-[#f5efe8]/80 sm:text-lg">
             MemoRoute helps you truly understand, retain and perform better using
-            the power of LECTOR AI evaluation and personalized spaced repetition.
+            the power of Samuel LECTOR AI evaluation and personalized spaced repetition.
           </p>
 
           <div className="mb-8 flex flex-wrap gap-4 items-center">
@@ -63,6 +73,32 @@ export function Hero() {
               <Play className="h-4 w-4 fill-white text-white" />
               Watch How It Works
             </button>
+          </div>
+
+          {/* Social Proof & Learner Avatars */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex -space-x-2">
+              {avatars.map((letter, i) => (
+                <div
+                  key={letter}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/20 bg-white/10 text-xs font-semibold text-[#f5efe8] backdrop-blur-sm"
+                  style={{ zIndex: avatars.length - i }}
+                >
+                  {letter}
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-[#f5efe8]/70">
+              Join thousands mastering technical concepts with Samuel AI.
+            </p>
+          </div>
+
+          {/* Relatable Connection Story Box */}
+          <div className="glass rounded-2xl border border-white/15 p-4 text-xs leading-relaxed text-[#f5efe8]/80 backdrop-blur-md max-w-lg">
+            <p className="font-semibold text-[#e8c89b] mb-1">
+              &ldquo;I used to re-read notes 10 times and still forget core topics on exam day. MemoRoute&apos;s active Feynman voice feedback with Samuel AI helped me retain 94% of my syllabus.&rdquo;
+            </p>
+            <p className="text-[11px] text-white/50 text-right">— Alex M., CS &amp; Pre-Med Student</p>
           </div>
         </motion.div>
 
