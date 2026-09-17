@@ -12,20 +12,24 @@ import {
   Upload,
 } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { GlassCard } from '../components/GlassCard'
 import { Navbar } from '../components/Navbar'
 import { ShinyButton } from '../components/ui/shiny-button'
 import { useAuth } from '../context/AuthContext'
+import { useNotes } from '../context/NotesContext'
 
 export function NewConcept() {
   const { isAuthenticated } = useAuth()
+  const { notes, recordPracticeSession } = useNotes()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   // Stepper state: 1 = Upload, 2 = Record/Explain, 3 = Evaluation
   const [step, setStep] = useState<1 | 2 | 3>(1)
 
   // Step 1: Concept & Notes state
+  const [selectedNoteId, setSelectedNoteId] = useState<string>('')
   const [topicName, setTopicName] = useState('')
   const [subject, setSubject] = useState('Computer Science')
   const [notesText, setNotesText] = useState('')
@@ -33,6 +37,50 @@ export function NewConcept() {
     name: string
     size: string
   } | null>(null)
+
+  // Evaluation result state
+  const [evalResult, setEvalResult] = useState<{
+    score: number
+    correctness: number
+    clarity: number
+    completeness: number
+  }>({
+    score: 9.2,
+    correctness: 94,
+    clarity: 90,
+    completeness: 92,
+  })
+
+  // Check URL query parameters for pre-selected note
+  useEffect(() => {
+    const paramNoteId = searchParams.get('noteId')
+    const paramTopic = searchParams.get('topic')
+
+    if (paramNoteId) {
+      const found = notes.find((n) => n.id === paramNoteId)
+      if (found) {
+        setSelectedNoteId(found.id)
+        setTopicName(found.title)
+        setSubject(found.subject)
+        setNotesText(found.content)
+      }
+    } else if (paramTopic) {
+      setTopicName(paramTopic)
+    }
+  }, [searchParams, notes])
+
+  // Handle dropdown selection of stored Notion note
+  const handleSelectNotionNote = (noteId: string) => {
+    setSelectedNoteId(noteId)
+    if (!noteId) return
+
+    const note = notes.find((n) => n.id === noteId)
+    if (note) {
+      setTopicName(note.title)
+      setSubject(note.subject)
+      setNotesText(note.content)
+    }
+  }
 
   // Step 2: Voice & Text Explanation state
   const [inputMode, setInputMode] = useState<'voice' | 'text'>('voice')
@@ -135,7 +183,7 @@ export function NewConcept() {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
   }
 
-  // Step 2 Submit -> Proceed to Evaluation
+  // Step 2 Submit -> Proceed to Evaluation & Record Session to Dashboard
   const handleSubmitExplanation = () => {
     if (inputMode === 'voice' && !audioUrl && recordingTime === 0) {
       alert('Please record your voice explanation or switch to text mode.')
@@ -145,6 +193,18 @@ export function NewConcept() {
       alert('Please enter your written explanation.')
       return
     }
+
+    // Evaluate response with randomized realistic high marks for LECTOR score
+    const correctness = Math.floor(Math.random() * 8) + 90 // 90-97%
+    const clarity = Math.floor(Math.random() * 8) + 88 // 88-95%
+    const completeness = Math.floor(Math.random() * 8) + 89 // 89-96%
+    const score = Number((correctness * 0.05 + clarity * 0.03 + completeness * 0.02).toFixed(1))
+
+    setEvalResult({ score, correctness, clarity, completeness })
+
+    // Save session in NotesContext (this updates dashboard live!)
+    recordPracticeSession(selectedNoteId, score, correctness, clarity, completeness, inputMode)
+
     setStep(3)
   }
 
@@ -233,6 +293,29 @@ export function NewConcept() {
               </h2>
 
               <div className="space-y-5">
+                {/* Select Notion Note Dropdown */}
+                {notes.length > 0 && (
+                  <div>
+                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#e8c89b]">
+                      Select from Stored Notion Workspace Notes
+                    </label>
+                    <select
+                      value={selectedNoteId}
+                      onChange={(e) => handleSelectNotionNote(e.target.value)}
+                      className="glass w-full rounded-2xl border border-white/15 px-4 py-3 text-sm text-[#e8c89b] font-semibold outline-none focus:border-[#e8c89b]"
+                    >
+                      <option value="" className="bg-[#1e1917] text-white">
+                        -- Or enter a custom concept topic below --
+                      </option>
+                      {notes.map((n) => (
+                        <option key={n.id} value={n.id} className="bg-[#1e1917] text-white">
+                          {n.icon} {n.title} ({n.subject})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 <div>
                   <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#e8c89b]">
                     Subject / Domain
@@ -523,7 +606,7 @@ export function NewConcept() {
                   LECTOR Evaluation Complete
                 </span>
                 <h2 className="mt-1 text-3xl font-bold text-white">
-                  Score: 9.2 / 10 (Strong Understanding)
+                  Score: {evalResult.score} / 10 ({evalResult.score >= 9.0 ? 'Strong Understanding' : 'Good Progress'})
                 </h2>
               </div>
 
@@ -533,7 +616,7 @@ export function NewConcept() {
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                     Correctness
                   </span>
-                  <p className="mt-2 text-2xl font-bold text-white">94%</p>
+                  <p className="mt-2 text-2xl font-bold text-white">{evalResult.correctness}%</p>
                   <p className="mt-1 text-[11px] text-white/60">Factual accuracy &amp; logic</p>
                 </div>
 
@@ -541,7 +624,7 @@ export function NewConcept() {
                   <span className="text-xs font-bold uppercase tracking-wider text-[#e8c89b]">
                     Clarity
                   </span>
-                  <p className="mt-2 text-2xl font-bold text-white">90%</p>
+                  <p className="mt-2 text-2xl font-bold text-white">{evalResult.clarity}%</p>
                   <p className="mt-1 text-[11px] text-white/60">Explanation structure</p>
                 </div>
 
@@ -549,7 +632,7 @@ export function NewConcept() {
                   <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
                     Completeness
                   </span>
-                  <p className="mt-2 text-2xl font-bold text-white">92%</p>
+                  <p className="mt-2 text-2xl font-bold text-white">{evalResult.completeness}%</p>
                   <p className="mt-1 text-[11px] text-white/60">Key sub-concept coverage</p>
                 </div>
               </div>

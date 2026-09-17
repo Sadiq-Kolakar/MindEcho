@@ -9,6 +9,7 @@ import {
 import DraggableWidgetGrid, {
 	type WidgetItem,
 } from '@/components/ui/draggable-widget-grid'
+import { useNotes } from '@/context/NotesContext'
 
 type Kind =
 	| 'sessions'
@@ -60,12 +61,6 @@ function noise(seed: number) {
 }
 
 const fmt = (v: number) => v.toLocaleString('en-US')
-
-const median = (values: number[]) => {
-	const sorted = [...values].sort((a, b) => a - b)
-	const mid = Math.floor(sorted.length / 2)
-	return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
-}
 
 type Tone = 'ok' | 'warn' | 'err' | 'idle'
 
@@ -298,12 +293,12 @@ function Sessions() {
 const RETENTION_GAPS: Record<number, Tone> = { 12: 'warn', 24: 'warn' }
 
 function Retention() {
-	const t = useTick(5000)
-	const degraded = t % 6 === 5
+	const { retentionAverage } = useNotes()
+	const degraded = retentionAverage < 85
 	return (
 		<Shell title="Retention health" meta="30d">
 			<Big unit="retained" unitWide>
-				78%
+				{retentionAverage}%
 			</Big>
 			<p
 				className={`mt-3 flex items-center gap-2 text-[13px] ${
@@ -317,7 +312,7 @@ function Retention() {
 			<div className="mt-auto">
 				<div
 					role="img"
-					aria-label="Retention over the last 30 days: 28 days strong, 2 days with fading concepts."
+					aria-label="Retention over the last 30 days"
 					className="flex h-5 gap-[2px] @[240px]:h-6">
 					{Array.from({ length: 30 }, (_, i) => (
 						<span
@@ -364,21 +359,19 @@ function Streak() {
 }
 
 function WeakConcepts() {
-	const t = useTick(5000)
-	const topics = [
-		{ name: 'BST traversal', count: 4 + (Math.floor(t / 3) % 3) },
-		{ name: 'Thermodynamics', count: 3 },
-		{ name: 'Integration', count: 2 + (Math.floor(t / 5) % 2) },
-	]
-	const total = topics.reduce((a, c) => a + c.count, 0) + 1
+	const { notes } = useNotes()
+	const weakNotes = [...notes]
+		.sort((a, b) => (a.retentionHealth || 0) - (b.retentionHealth || 0))
+		.slice(0, 3)
+
 	return (
 		<Shell title="Weak concepts" meta="needs review">
-			<Big unit="topics">{total}</Big>
+			<Big unit="topics">{weakNotes.length}</Big>
 			<dl className="mt-auto space-y-2">
-				{topics.map((c, i) => (
-					<Row key={c.name} value={c.count}>
-						<Dot tone={i === 0 ? 'err' : 'idle'} />
-						{c.name}
+				{weakNotes.map((n, i) => (
+					<Row key={n.id} value={`${n.retentionHealth}%`}>
+						<Dot tone={i === 0 ? 'err' : 'warn'} />
+						<span className="truncate">{n.title}</span>
 					</Row>
 				))}
 			</dl>
@@ -386,38 +379,9 @@ function WeakConcepts() {
 	)
 }
 
-const TOPICS = [
-	'Neural Networks',
-	'Binary Search',
-	'Photosynthesis',
-	'Thermodynamics',
-	'Integration',
-]
-
-function explanation(n: number) {
-	const r = noise(n * 3)
-	const tone: Tone = r > 0.85 ? 'err' : r > 0.7 ? 'warn' : 'ok'
-	return {
-		n,
-		id: `exp_${Math.floor(noise(n) * 0xffffff)
-			.toString(16)
-			.padStart(6, '0')}`,
-		topic: TOPICS[Math.floor(noise(n * 7) * TOPICS.length)],
-		score: 2.5 + noise(n * 13) * 2.5,
-		tone,
-	}
-}
-
-const SCORE_WORD: Record<Tone, string> = {
-	ok: 'strong',
-	warn: 'moderate',
-	err: 'weak',
-	idle: 'pending',
-}
-
 function Explanations() {
-	const t = useTick(2200)
-	const rows = Array.from({ length: 4 }, (_, i) => explanation(t + 40 - i))
+	const { explanations, avgLectorScore } = useNotes()
+	const recent = explanations.slice(0, 4)
 	return (
 		<Shell
 			title="Recent explanations"
@@ -427,65 +391,66 @@ function Explanations() {
 					live
 				</span>
 			}>
-			<Big unit="avg LECTOR">{median(rows.map((r) => r.score)).toFixed(1)}</Big>
+			<Big unit="avg LECTOR">{avgLectorScore.toFixed(1)}</Big>
 			<ol
 				aria-label="Most recent explanations"
 				className="mt-auto space-y-2 text-[13px]">
-				{rows.map((r, i) => (
-					<li
-						key={r.n}
-						className={`grid grid-cols-[6px_minmax(0,1fr)_48px] items-center gap-3 @[440px]:grid-cols-[6px_100px_minmax(0,1fr)_20%_48px] ${
-							i === 0 ? 'text-foreground' : 'text-muted-foreground'
-						} ${i >= 3 ? 'hidden @[520px]:grid' : i === 2 ? 'hidden @[360px]:grid' : ''}`}>
-						<Dot tone={r.tone} />
-						<span className="truncate">
-							{r.id}
-							<span className="sr-only">
-								, {SCORE_WORD[r.tone]}, {r.topic},
+				{recent.map((r, i) => {
+					const tone: Tone = r.score >= 9.0 ? 'ok' : r.score >= 8.0 ? 'warn' : 'err'
+					return (
+						<li
+							key={r.id}
+							className={`grid grid-cols-[6px_minmax(0,1fr)_48px] items-center gap-3 @[440px]:grid-cols-[6px_100px_minmax(0,1fr)_20%_48px] ${
+								i === 0 ? 'text-foreground' : 'text-muted-foreground'
+							}`}>
+							<Dot tone={tone} />
+							<span className="truncate">{r.id.substring(0, 8)}</span>
+							<span aria-hidden="true" className="hidden truncate @[440px]:block">
+								{r.topic}
 							</span>
-						</span>
-						<span aria-hidden="true" className="hidden truncate @[440px]:block">
-							{r.topic}
-						</span>
-						<span
-							aria-hidden="true"
-							className="hidden h-[3px] rounded-full bg-foreground/10 @[440px]:block">
 							<span
-								className={`block h-full rounded-full ${i === 0 ? ACCENT : 'bg-foreground/25'}`}
-								style={{ width: `${(r.score / 5) * 100}%` }}
-							/>
-						</span>
-						<span className="text-right tabular-nums">{r.score.toFixed(1)}</span>
-					</li>
-				))}
+								aria-hidden="true"
+								className="hidden h-[3px] rounded-full bg-foreground/10 @[440px]:block">
+								<span
+									className={`block h-full rounded-full ${i === 0 ? ACCENT : 'bg-foreground/25'}`}
+									style={{ width: `${(r.score / 10) * 100}%` }}
+								/>
+							</span>
+							<span className="text-right tabular-nums">{r.score.toFixed(1)}</span>
+						</li>
+					)
+				})}
 			</ol>
 		</Shell>
 	)
 }
 
-const LECTOR_DIMS = [
-	{ name: 'Correctness', value: 0.91 },
-	{ name: 'Clarity', value: 0.87 },
-	{ name: 'Completeness', value: 0.84 },
-]
-
 function LectorScore() {
-	const score = LECTOR_DIMS.reduce((a, e) => a + e.value, 0) / LECTOR_DIMS.length
+	const { avgLectorScore, explanations } = useNotes()
+	const latestExp = explanations[0]
+	const correctness = latestExp ? (latestExp.correctness / 100).toFixed(2) : '0.94'
+	const clarity = latestExp ? (latestExp.clarity / 100).toFixed(2) : '0.90'
+	const completeness = latestExp ? (latestExp.completeness / 100).toFixed(2) : '0.92'
+
 	return (
 		<Shell title="LECTOR score">
 			<div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-				<Big>{score.toFixed(2)}</Big>
+				<Big>{avgLectorScore.toFixed(2)}</Big>
 				<span className={`text-[14px] tabular-nums ${TEXT.ok}`}>
 					<span aria-hidden="true">↑ </span>0.04
 					<span className="sr-only"> since last week</span>
 				</span>
 			</div>
 			<dl className="mt-auto space-y-2">
-				{LECTOR_DIMS.map((e) => (
-					<Row key={e.name} value={e.value.toFixed(2)}>
-						{e.name}
-					</Row>
-				))}
+				<Row key="Correctness" value={correctness}>
+					Correctness
+				</Row>
+				<Row key="Clarity" value={clarity}>
+					Clarity
+				</Row>
+				<Row key="Completeness" value={completeness}>
+					Completeness
+				</Row>
 			</dl>
 		</Shell>
 	)
