@@ -1,0 +1,195 @@
+@import 'tailwindcss';
+
+/* shadcn/ui theme tokens — dark mocha & amber gold theme */
+:root {
+  --background: #1e1917;
+  --foreground: #f5efe8;
+  --card: rgba(255, 255, 255, 0.07);
+  --card-foreground: #f5efe8;
+  --muted-foreground: #b3a69a;
+  --border: rgba(255, 255, 255, 0.14);
+  --ring: #e8c89b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+}
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-script: 'Caveat', cursive;
+
+  --color-cream: #2b2421;
+  --color-cream-light: #362f2c;
+  --color-warm-beige: #201a18;
+  --color-warm-taupe: #3c3430;
+  --color-taupe-dark: #191412;
+  --color-charcoal: #14100e;
+  --color-gold: #d4b896;
+  --color-gold-soft: #e8c89b;
+  --color-glass-white: rgba(255, 255, 255, 0.08);
+  --color-glass-border: rgba(255, 255, 255, 0.14);
+  --color-glass-highlight: rgba(255, 255, 255, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #1e1917;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: #1e1917;
+  color: #f5efe8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-strong {
+  background: rgba(43, 36, 33, 0.75);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.glass-dark {
+  background: rgba(25, 20, 18, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-hover {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.glass-hover:hover {
+  transform: translateY(-4px) scale(1.015);
+  border-color: rgba(232, 200, 155, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(232, 200, 155, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-glow {
+  background: linear-gradient(135deg, #f5e4c6 0%, #e8c89b 50%, #d4b896 100%);
+  color: #1e1917;
+  box-shadow:
+    0 4px 20px rgba(232, 200, 155, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 32px rgba(232, 200, 155, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes bubble-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-bubble-in {
+  animation: bubble-in 0.6s ease-out forwards;
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
