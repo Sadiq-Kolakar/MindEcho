@@ -3,9 +3,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { Bot, Brain, Cpu, Sparkles, Zap } from 'lucide-react'
 import React, { useState } from 'react'
+import { AIBotModal } from './AIBotModal'
 
 const robotMessages = [
-  "Hi! I'm your 3D LECTOR AI Robot. Move your mouse to interact with me!",
+  "Hi! I'm your 3D LECTOR AI Robot. Click me to chat & test active recall!",
   "I analyze your explanations for clarity, completeness & long-term retention.",
   "Ready to supercharge your memory schedule? Let's get started!",
   "AI Neural Engine active: 99.4% retention tracking accuracy.",
@@ -15,6 +16,7 @@ export function AnimatedCharacter() {
   const [msgIndex, setMsgIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Mouse tilt tracking values
   const mouseX = useMotionValue(0)
@@ -60,6 +62,7 @@ export function AnimatedCharacter() {
 
   const handleRobotClick = () => {
     setIsClicked(true)
+    setIsChatOpen(true)
     setMsgIndex((prev) => (prev + 1) % robotMessages.length)
     setTimeout(() => setIsClicked(false), 400)
   }
@@ -89,7 +92,7 @@ export function AnimatedCharacter() {
               LECTOR 3D Humanoid Robot
             </span>
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] text-white/40">(Click me)</span>
+            <span className="text-[10px] text-white/40">(Click to Chat)</span>
           </div>
           <p className="mt-1 text-xs sm:text-sm font-medium leading-relaxed text-[#f5efe8]">
             &ldquo;{robotMessages[msgIndex]}&rdquo;
@@ -111,8 +114,8 @@ export function AnimatedCharacter() {
             left: spotlightX,
             top: spotlightY,
             background: isHovered
-              ? 'radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(232, 200, 155, 0.25) 35%, transparent 70%)'
-              : 'radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(212, 184, 150, 0.15) 35%, transparent 65%)',
+              ? 'radial-gradient(circle, rgba(232, 200, 155, 0.35) 0%, rgba(45, 36, 32, 0.5) 40%, transparent 70%)'
+              : 'radial-gradient(circle, rgba(232, 200, 155, 0.2) 0%, rgba(35, 28, 25, 0.4) 40%, transparent 65%)',
           }}
         />
 
@@ -336,15 +339,15 @@ export function AnimatedCharacter() {
               <path
                 d="M138 80 C138 48 242 48 242 80 C242 118 228 126 190 126 C152 126 138 118 138 80 Z"
                 fill="url(#glassReflection)"
-                stroke="#60a5fa"
+                stroke="#e8c89b"
                 strokeWidth="1.5"
               />
 
               {/* Glossy Specular Curved Highlight (White Light Reflection) */}
               <path
                 d="M148 65 C165 52 215 52 232 65 C215 58 165 58 148 65 Z"
-                fill="#ffffff"
-                opacity="0.75"
+                fill="#e8c89b"
+                opacity="0.3"
               />
 
               {/* DOT MATRIX LED DIGITAL EYES (MATCHING USER IMAGE MATRIX) */}
@@ -387,6 +390,9 @@ export function AnimatedCharacter() {
       >
         Move mouse to tilt 3D Robot &bull; Click to chat
       </motion.p>
+
+      {/* Interactive Chat Modal */}
+      <AIBotModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { FloatingAIBot } from './components/FloatingAIBot'
 import { AuthProvider } from './context/AuthContext'
 import { NotesProvider } from './context/NotesContext'
 import { AdaptiveCalendar } from './pages/AdaptiveCalendar'
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/calendar" element={<AdaptiveCalendar />} />
             <Route path="/review-due" element={<AdaptiveCalendar />} />
           </Routes>
+          <FloatingAIBot />
         </BrowserRouter>
       </NotesProvider>
     </AuthProvider>
