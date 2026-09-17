@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { NotesProvider } from './context/NotesContext'
+import { AdaptiveCalendar } from './pages/AdaptiveCalendar'
 import { Dashboard } from './pages/Dashboard'
 import { Home } from './pages/Home'
 import { LLMPayment } from './pages/LLMPayment'
@@ -21,6 +22,8 @@ export default function App() {
             <Route path="/concept/new" element={<NewConcept />} />
             <Route path="/workspace" element={<NotionWorkspace />} />
             <Route path="/subjects" element={<NotionWorkspace />} />
+            <Route path="/calendar" element={<AdaptiveCalendar />} />
+            <Route path="/review-due" element={<AdaptiveCalendar />} />
           </Routes>
         </BrowserRouter>
       </NotesProvider>

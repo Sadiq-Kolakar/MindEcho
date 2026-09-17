@@ -36,9 +36,19 @@ export interface PracticeExplanation {
   timestamp: string
 }
 
+export interface ImportantDateItem {
+  id: string
+  title: string
+  date: string // YYYY-MM-DD
+  subject: string
+  priority: 'high' | 'medium' | 'low'
+  description?: string
+}
+
 interface NotesContextValue {
   notes: NoteItem[]
   explanations: PracticeExplanation[]
+  importantDates: ImportantDateItem[]
   activeNoteId: string | null
   setActiveNoteId: (id: string | null) => void
   addNote: (note: Omit<NoteItem, 'id' | 'createdAt' | 'updatedAt' | 'practiceCount' | 'retentionHealth'>) => NoteItem
@@ -52,6 +62,8 @@ interface NotesContextValue {
     completeness: number,
     mode: 'voice' | 'text'
   ) => void
+  addImportantDate: (item: Omit<ImportantDateItem, 'id'>) => void
+  deleteImportantDate: (id: string) => void
   avgLectorScore: number
   totalSessionsToday: number
   retentionAverage: number
@@ -194,6 +206,35 @@ const DEFAULT_EXPLANATIONS: PracticeExplanation[] = [
   },
 ]
 
+const DATES_STORAGE_KEY = 'memoroute_important_dates'
+
+const DEFAULT_IMPORTANT_DATES: ImportantDateItem[] = [
+  {
+    id: 'date-1',
+    title: 'Final CS Midterm Exam ⭐',
+    date: '2026-09-25',
+    subject: 'Computer Science',
+    priority: 'high',
+    description: 'Covers Binary Search Trees, Graph Algorithms, and Backpropagation complexity.',
+  },
+  {
+    id: 'date-2',
+    title: 'Thermodynamics Quiz ⚡',
+    date: '2026-09-28',
+    subject: 'Physics & Engineering',
+    priority: 'medium',
+    description: 'Carnot engine efficiency and Second Law entropy calculations.',
+  },
+  {
+    id: 'date-3',
+    title: 'Biology Lab Evaluation 🌿',
+    date: '2026-10-02',
+    subject: 'Biology & Medicine',
+    priority: 'low',
+    description: 'Photosynthesis light-dependent reactions test.',
+  },
+]
+
 const NotesContext = createContext<NotesContextValue | null>(null)
 
 export function NotesProvider({ children }: { children: ReactNode }) {
@@ -215,6 +256,15 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     }
   })
 
+  const [importantDates, setImportantDates] = useState<ImportantDateItem[]>(() => {
+    try {
+      const saved = localStorage.getItem(DATES_STORAGE_KEY)
+      return saved ? (JSON.parse(saved) as ImportantDateItem[]) : DEFAULT_IMPORTANT_DATES
+    } catch {
+      return DEFAULT_IMPORTANT_DATES
+    }
+  })
+
   const [activeNoteId, setActiveNoteId] = useState<string | null>('note-1')
 
   // Save changes to localStorage
@@ -225,6 +275,10 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem(EXPLANATIONS_STORAGE_KEY, JSON.stringify(explanations))
   }, [explanations])
+
+  useEffect(() => {
+    localStorage.setItem(DATES_STORAGE_KEY, JSON.stringify(importantDates))
+  }, [importantDates])
 
   // Add new note
   const addNote = useCallback(
@@ -258,6 +312,20 @@ export function NotesProvider({ children }: { children: ReactNode }) {
   const deleteNote = useCallback((id: string) => {
     setNotes((prev) => prev.filter((n) => n.id !== id))
     setActiveNoteId((curr) => (curr === id ? null : curr))
+  }, [])
+
+  // Add important date
+  const addImportantDate = useCallback((item: Omit<ImportantDateItem, 'id'>) => {
+    const newItem: ImportantDateItem = {
+      ...item,
+      id: `date-${Date.now()}`,
+    }
+    setImportantDates((prev) => [newItem, ...prev])
+  }, [])
+
+  // Delete important date
+  const deleteImportantDate = useCallback((id: string) => {
+    setImportantDates((prev) => prev.filter((d) => d.id !== id))
   }, [])
 
   // Record practice session & update scores in dashboard
@@ -342,12 +410,15 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     () => ({
       notes,
       explanations,
+      importantDates,
       activeNoteId,
       setActiveNoteId,
       addNote,
       updateNote,
       deleteNote,
       recordPracticeSession,
+      addImportantDate,
+      deleteImportantDate,
       avgLectorScore,
       totalSessionsToday,
       retentionAverage,
@@ -355,11 +426,14 @@ export function NotesProvider({ children }: { children: ReactNode }) {
     [
       notes,
       explanations,
+      importantDates,
       activeNoteId,
       addNote,
       updateNote,
       deleteNote,
       recordPracticeSession,
+      addImportantDate,
+      deleteImportantDate,
       avgLectorScore,
       totalSessionsToday,
       retentionAverage,
