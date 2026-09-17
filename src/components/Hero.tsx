@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Play, Sparkles } from 'lucide-react'
+import { Play } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatedCharacter } from './AnimatedCharacter'
 import { ShinyButton } from './ui/shiny-button'
@@ -31,13 +31,6 @@ export function Hero() {
           transition={{ duration: 0.7 }}
           className="text-left"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#e8c89b]/30 bg-[#e8c89b]/10 px-3.5 py-1.5 backdrop-blur-md">
-            <Sparkles className="h-3.5 w-3.5 text-[#e8c89b]" />
-            <span className="text-xs font-semibold tracking-wider text-[#e8c89b] uppercase">
-              Next-Gen AI Learning Platform
-            </span>
-          </div>
-
           <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
             Understand Today.
             <br />
