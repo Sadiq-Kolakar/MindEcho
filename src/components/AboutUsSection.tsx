@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion'
-import { ChevronRight, Quote, Users } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronLeft, ChevronRight, Quote, Sparkles, Users } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 import { GlassCard } from './GlassCard'
 
 const teamMembers = [
@@ -60,9 +61,51 @@ const teamMembers = [
 ]
 
 export function AboutUsSection() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Circular Next / Prev Handlers
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % teamMembers.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length)
+  }
+
+  // Circular Auto-play Timer (3.5s Interval)
+  useEffect(() => {
+    if (!isPaused) {
+      timerRef.current = setInterval(() => {
+        nextSlide()
+      }, 3500)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [isPaused, currentIndex])
+
+  // Drag Swipe Handler for Framer Motion
+  const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
+    if (info.offset.x < -40) {
+      nextSlide()
+    } else if (info.offset.x > 40) {
+      prevSlide()
+    }
+  }
+
+  // Calculate visible indices in circular wrap order
+  const getMemberAt = (offset: number) => {
+    const idx = (currentIndex + offset + teamMembers.length) % teamMembers.length
+    return teamMembers[idx]
+  }
+
   return (
-    <section id="about-us" className="relative px-4 py-20 sm:px-6">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#251e1b] via-[#1e1917] to-[#14100e]" />
+    <section id="about-us" className="relative px-4 py-24 sm:px-6 bg-[#181311] overflow-hidden">
+      {/* Background Grid Texture */}
+      <div className="absolute inset-0 bg-grid-lines opacity-40 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[450px] w-[650px] rounded-full bg-[#e8c89b]/10 blur-[140px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl">
         {/* Header */}
@@ -78,80 +121,181 @@ export function AboutUsSection() {
               Meet Our Team
             </span>
           </div>
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            About Us & The Minds Behind MemoRoute
+          <h2 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
+            About Us &amp; The Minds Behind MemoRoute
           </h2>
-          <p className="mx-auto max-w-2xl text-base text-[#f5efe8]/75">
-            We are a team of AI researchers, neuroscientists, and product designers dedicated to solving the human forgetting curve.
+          <p className="mx-auto max-w-2xl text-sm sm:text-base text-[#f5efe8]/75 leading-relaxed">
+            Drag or click arrows to explore all 6 team leaders in a continuous circular loop.
           </p>
         </motion.div>
 
-        {/* Scroll Indicator Tip */}
-        <div className="mb-4 flex items-center justify-between text-xs text-[#e8c89b]">
-          <span className="font-semibold uppercase tracking-wider">
-            Scroll horizontally to view all 6 team members &rarr;
-          </span>
-          <span className="hidden sm:inline-block text-white/40">
-            Swipe or shift-scroll &rarr;
-          </span>
-        </div>
+        {/* Circular Draggable Carousel Stage */}
+        <div
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          className="relative mx-auto max-w-5xl"
+        >
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute -left-4 sm:-left-6 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-[#251e1b]/90 text-[#e8c89b] shadow-2xl backdrop-blur-xl transition hover:border-[#e8c89b] hover:bg-[#e8c89b] hover:text-[#1e1917]"
+            aria-label="Previous Team Member"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
 
-        {/* Scrollable Team Container */}
-        <div className="flex gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-[#e8c89b]/30">
-          {teamMembers.map((member, i) => (
-            <motion.div
-              key={member.id}
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="w-[290px] sm:w-[330px] shrink-0 snap-start"
-            >
-              <GlassCard dark className="flex h-full flex-col justify-between p-6 border border-white/15 shadow-2xl relative group hover:border-[#e8c89b]/40">
-                <div>
-                  {/* Avatar & Badge */}
-                  <div className="mb-6 flex items-center justify-between">
-                    <div className="relative">
-                      <img
-                        src={member.avatar}
-                        alt={member.name}
-                        className="h-20 w-20 rounded-2xl object-cover border-2 border-[#e8c89b]/40 shadow-lg group-hover:scale-105 transition-transform"
-                      />
-                      <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#e8c89b] text-[10px] font-bold text-[#1e1917]">
-                        {member.initials}
+          <button
+            onClick={nextSlide}
+            className="absolute -right-4 sm:-right-6 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-[#251e1b]/90 text-[#e8c89b] shadow-2xl backdrop-blur-xl transition hover:border-[#e8c89b] hover:bg-[#e8c89b] hover:text-[#1e1917]"
+            aria-label="Next Team Member"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Draggable Motion Container */}
+          <motion.div
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={handleDragEnd}
+            className="cursor-grab active:cursor-grabbing py-6"
+          >
+            {/* Desktop 3-Card Circular Display Grid */}
+            <div className="hidden sm:grid sm:grid-cols-3 gap-6 items-center">
+              {[-1, 0, 1].map((offset) => {
+                const member = getMemberAt(offset)
+                const isCenter = offset === 0
+                return (
+                  <motion.div
+                    key={`${member.id}-${offset}`}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{
+                      opacity: isCenter ? 1 : 0.7,
+                      scale: isCenter ? 1.04 : 0.93,
+                      y: isCenter ? -6 : 0,
+                    }}
+                    transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                    className="h-full"
+                  >
+                    <GlassCard
+                      dark
+                      className={`flex h-full flex-col justify-between p-7 text-left border transition-all duration-300 shadow-2xl relative ${
+                        isCenter
+                          ? 'border-[#e8c89b] bg-[#2a221f] ring-2 ring-[#e8c89b]/40 shadow-2xl'
+                          : 'border-white/12 bg-[#1e1917]/85 opacity-75 hover:opacity-100'
+                      }`}
+                    >
+                      <div>
+                        <div className="mb-6 flex items-center justify-between">
+                          <div className="relative">
+                            <img
+                              src={member.avatar}
+                              alt={member.name}
+                              className="h-20 w-20 rounded-2xl object-cover border-2 border-[#e8c89b]/40 shadow-md"
+                            />
+                            <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#e8c89b] text-[10px] font-bold text-[#1e1917]">
+                              {member.initials}
+                            </div>
+                          </div>
+
+                          <span className="rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 px-3 py-1 text-[11px] font-bold text-[#e8c89b]">
+                            {member.badge}
+                          </span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white mb-1">
+                          {member.name}
+                        </h3>
+                        <p className="text-xs font-semibold text-[#e8c89b] mb-4">
+                          {member.role}
+                        </p>
+
+                        <div className="relative rounded-2xl bg-black/40 border border-white/10 p-4">
+                          <Quote className="absolute top-2.5 left-2.5 h-4 w-4 text-[#e8c89b]/40" />
+                          <p className="pl-4 text-xs italic leading-relaxed text-[#f5efe8]/90">
+                            &ldquo;{member.quote}&rdquo;
+                          </p>
+                        </div>
                       </div>
+
+                      <div className="mt-6 flex items-center justify-between text-xs text-[#e8c89b] font-bold border-t border-white/10 pt-3">
+                        <span className="flex items-center gap-1">
+                          <Sparkles className="h-3.5 w-3.5" /> LECTOR Team
+                        </span>
+                        <span>Member #{member.id}</span>
+                      </div>
+                    </GlassCard>
+                  </motion.div>
+                )
+              })}
+            </div>
+
+            {/* Mobile Single Card Carousel Display */}
+            <div className="sm:hidden px-2">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <GlassCard dark className="p-6 border border-[#e8c89b] bg-[#2a221f] shadow-2xl">
+                    <div className="mb-6 flex items-center justify-between">
+                      <div className="relative">
+                        <img
+                          src={teamMembers[currentIndex].avatar}
+                          alt={teamMembers[currentIndex].name}
+                          className="h-20 w-20 rounded-2xl object-cover border-2 border-[#e8c89b]/40"
+                        />
+                        <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#e8c89b] text-[10px] font-bold text-[#1e1917]">
+                          {teamMembers[currentIndex].initials}
+                        </div>
+                      </div>
+
+                      <span className="rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 px-3 py-1 text-[11px] font-bold text-[#e8c89b]">
+                        {teamMembers[currentIndex].badge}
+                      </span>
                     </div>
-                    <span className="rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 px-3 py-1 text-[11px] font-bold text-[#e8c89b]">
-                      {member.badge}
-                    </span>
-                  </div>
 
-                  {/* Name & Role */}
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-semibold text-[#e8c89b] mb-4">
-                    {member.role}
-                  </p>
-
-                  {/* Single Line Quote */}
-                  <div className="relative rounded-2xl bg-white/5 border border-white/10 p-4">
-                    <Quote className="absolute top-2 left-2 h-4 w-4 text-[#e8c89b]/30" />
-                    <p className="pl-4 text-xs italic leading-relaxed text-[#f5efe8]/85">
-                      &ldquo;{member.quote}&rdquo;
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      {teamMembers[currentIndex].name}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#e8c89b] mb-4">
+                      {teamMembers[currentIndex].role}
                     </p>
-                  </div>
-                </div>
 
-                <div className="mt-6 flex items-center justify-end text-xs text-[#e8c89b] font-medium group-hover:translate-x-1 transition-transform">
-                  <span>Connect</span>
-                  <ChevronRight className="h-4 w-4" />
-                </div>
-              </GlassCard>
-            </motion.div>
-          ))}
+                    <div className="relative rounded-2xl bg-black/40 border border-white/10 p-4">
+                      <Quote className="absolute top-2.5 left-2.5 h-4 w-4 text-[#e8c89b]/40" />
+                      <p className="pl-4 text-xs italic leading-relaxed text-[#f5efe8]/90">
+                        &ldquo;{teamMembers[currentIndex].quote}&rdquo;
+                      </p>
+                    </div>
+                  </GlassCard>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Circular Navigation Dots */}
+          <div className="mt-8 flex items-center justify-center gap-2.5">
+            {teamMembers.map((member, idx) => (
+              <button
+                key={member.id}
+                onClick={() => setCurrentIndex(idx)}
+                className={`h-2.5 transition-all duration-300 rounded-full ${
+                  currentIndex === idx
+                    ? 'w-8 bg-[#e8c89b] shadow-md'
+                    : 'w-2.5 bg-white/20 hover:bg-white/40'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
   )
 }
+
+export default AboutUsSection;
