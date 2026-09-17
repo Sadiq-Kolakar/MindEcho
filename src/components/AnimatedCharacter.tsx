@@ -51,50 +51,54 @@ export function AnimatedCharacter() {
         <div className="absolute -bottom-2 left-12 h-4 w-4 rotate-45 border-b border-r border-[#e8c89b]/30 bg-[#2b2421]" />
       </motion.div>
 
-      {/* Main 3D Spline Robot Container */}
-      <div className="relative w-full h-[480px] flex items-center justify-center overflow-hidden rounded-3xl border border-[#e8c89b]/20 bg-[#1e1917]/60 backdrop-blur-md shadow-2xl">
-        {/* Dynamic Warm Studio Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(232,200,155,0.18),transparent_70%)] pointer-events-none" />
+      {/* Main 3D Spline Robot Container (Borderless with Ambient Hover Glow) */}
+      <motion.div
+        whileHover={{ scale: 1.025 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+        className="relative w-full h-[520px] flex items-center justify-center group cursor-grab active:cursor-grabbing"
+      >
+        {/* Dynamic Warm Ambient Studio Radial Glow - Expands & Brightens on Hover */}
+        <div className="absolute inset-0 mx-auto my-auto h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(232,200,155,0.22)_0%,rgba(232,200,155,0.08)_45%,transparent_75%)] pointer-events-none transition-all duration-500 group-hover:scale-125 group-hover:bg-[radial-gradient(circle,rgba(232,200,155,0.4)_0%,rgba(232,200,155,0.15)_50%,transparent_80%)] blur-2xl" />
 
         {/* Outer Floating Feature Badges */}
-        <div className="absolute left-3 top-4 z-20 hidden sm:block pointer-events-none">
+        <div className="absolute left-0 top-6 z-20 hidden sm:block pointer-events-none">
           <motion.div
             animate={{ y: [0, -6, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/30 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/80"
+            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/40 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/70 transition group-hover:border-[#e8c89b] group-hover:bg-[#251e1b]/90"
           >
             <Cpu className="h-4 w-4 text-[#e8c89b]" />
             3D Neural Engine
           </motion.div>
         </div>
 
-        <div className="absolute right-3 top-4 z-20 hidden sm:block pointer-events-none">
+        <div className="absolute right-0 top-6 z-20 hidden sm:block pointer-events-none">
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/30 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/80"
+            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/40 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/70 transition group-hover:border-[#e8c89b] group-hover:bg-[#251e1b]/90"
           >
             <Sparkles className="h-4 w-4 text-[#e8c89b]" />
             Interactive Spline 3D
           </motion.div>
         </div>
 
-        <div className="absolute left-3 bottom-4 z-20 hidden sm:block pointer-events-none">
+        <div className="absolute left-0 bottom-6 z-20 hidden sm:block pointer-events-none">
           <motion.div
             animate={{ y: [0, -5, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/30 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/80"
+            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/40 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/70 transition group-hover:border-[#e8c89b] group-hover:bg-[#251e1b]/90"
           >
             <Brain className="h-4 w-4 text-[#e8c89b]" />
             Spaced Retention
           </motion.div>
         </div>
 
-        <div className="absolute right-3 bottom-4 z-20 hidden sm:block pointer-events-none">
+        <div className="absolute right-0 bottom-6 z-20 hidden sm:block pointer-events-none">
           <motion.div
             animate={{ y: [0, 5, 0] }}
             transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/30 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/80"
+            className="glass flex items-center gap-2 rounded-full border border-[#e8c89b]/40 px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8] shadow-xl backdrop-blur-md bg-[#251e1b]/70 transition group-hover:border-[#e8c89b] group-hover:bg-[#251e1b]/90"
           >
             <Zap className="h-4 w-4 text-emerald-400" />
             Adaptive AI Active
@@ -102,13 +106,13 @@ export function AnimatedCharacter() {
         </div>
 
         {/* Real Spline 3D Scene */}
-        <div className="w-full h-full cursor-grab active:cursor-grabbing">
+        <div className="w-full h-full">
           <SplineScene
             scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
             className="w-full h-full"
           />
         </div>
-      </div>
+      </motion.div>
 
       {/* Control tip */}
       <div className="mt-3 flex items-center gap-3">
