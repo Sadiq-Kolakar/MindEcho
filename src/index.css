@@ -9,6 +9,16 @@
   --muted-foreground: #b3a69a;
   --border: rgba(255, 255, 255, 0.14);
   --ring: #e8c89b;
+  --primary: #e8c89b;
+  --primary-foreground: #1e1917;
+  --accent: rgba(232, 200, 155, 0.15);
+  --accent-foreground: #f5efe8;
+  --muted: rgba(255, 255, 255, 0.08);
+  --destructive-foreground: oklch(1 0 0);
+}
+
+.dark {
+  --destructive-foreground: oklch(1 0 0);
 }
 
 @theme inline {
@@ -19,6 +29,13 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-destructive-foreground: oklch(1 0 0);
+  --color-color-destructive-foreground: var(--color-destructive-foreground);
 }
 
 @theme {
