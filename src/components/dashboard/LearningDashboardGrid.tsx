@@ -6,6 +6,7 @@ import {
 	useState,
 	type ReactNode,
 } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import DraggableWidgetGrid, {
 	type WidgetItem,
 } from '@/components/ui/draggable-widget-grid'
@@ -32,7 +33,7 @@ const WIDGETS: Widget[] = [
 	{ id: 'weak', kind: 'weak', size: 'sm', label: 'Weak concepts' },
 	{ id: 'explanations', kind: 'explanations', size: 'wide', label: 'Recent explanations' },
 	{ id: 'lector', kind: 'lector', size: 'sm', label: 'LECTOR score' },
-	{ id: 'modes', kind: 'modes', size: 'wide', label: 'Study modes' },
+	{ id: 'modes', kind: 'modes', size: 'wide', label: 'Adaptive Revision Schedule' },
 	{ id: 'subjects', kind: 'subjects', size: 'wide', label: 'Topics by subject' },
 ]
 
@@ -456,70 +457,61 @@ function LectorScore() {
 	)
 }
 
-const MODES = [
-	{ name: 'Explain', sessions: 48 },
-	{ name: 'Review', sessions: 32 },
-	{ name: 'Exam Mode', sessions: 14 },
-	{ name: 'Voice Input', sessions: 22 },
-]
+function DueRevisions() {
+	const { notes } = useNotes()
+	const navigate = useNavigate()
+	const todayStr = '2026-09-18'
 
-function StudyModes() {
-	const t = useTick(3000)
-	const rows = MODES.map((mode, i) => ({
-		...mode,
-		sessions: mode.sessions + Math.floor((t % 40) * (4 - i) * 0.4),
-	}))
-	const max = Math.max(...rows.map((r) => r.sessions))
-	const total = rows.reduce((a, r) => a + r.sessions, 0)
+	const dueNotes = notes.filter((n) => n.nextReviewDate)
+	const dueTodayCount = notes.filter(
+		(n) => n.nextReviewDate && n.nextReviewDate <= todayStr,
+	).length
+
 	return (
-		<Shell title="Study modes" meta="this week">
-			<Big>{fmt(total)}</Big>
-			<table className="mt-auto w-full table-fixed text-left text-[13px]">
-				<caption className="sr-only">Study mode usage this week</caption>
-				<thead className="sr-only">
-					<tr>
-						<th scope="col">mode</th>
-						<th scope="col">share</th>
-						<th scope="col">sessions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((r, i) => (
-						<tr
-							key={r.name}
-							className={
-								i >= 3
-									? 'hidden @[520px]:table-row'
-									: i === 2
-										? 'hidden @[360px]:table-row'
-										: ''
-							}>
-							<th
-								scope="row"
-								className={`w-[120px] truncate py-[6px] pr-3 font-normal ${
-									i === 0 ? 'text-foreground' : 'text-muted-foreground'
-								}`}>
-								{r.name}
-							</th>
-							<td className="py-[6px]">
+		<Shell
+			title="Adaptive Revision Schedule"
+			meta={
+				<Link
+					to="/calendar"
+					className="text-xs text-[#e8c89b] hover:underline font-semibold flex items-center gap-1">
+					Full Calendar →
+				</Link>
+			}>
+			<Big unit="due for review today">{dueTodayCount}</Big>
+			<ul className="mt-3 space-y-2 text-[13px]">
+				{dueNotes.slice(0, 3).map((n) => {
+					const isDueNow = Boolean(n.nextReviewDate && n.nextReviewDate <= todayStr)
+					return (
+						<li
+							key={n.id}
+							className="flex items-center justify-between gap-2 rounded-xl bg-foreground/5 p-2 border border-foreground/10 hover:border-gold/40 transition">
+							<div className="flex items-center gap-2 truncate">
+								<span className="text-base">{n.icon}</span>
+								<span className="truncate font-semibold text-foreground">{n.title}</span>
+							</div>
+
+							<div className="flex items-center gap-2 shrink-0">
 								<span
-									aria-hidden="true"
-									className="block h-[3px] rounded-full bg-foreground/10">
-									<span
-										className={`block h-full rounded-full transition-[width] duration-700 motion-reduce:transition-none ${
-											i === 0 ? ACCENT : 'bg-foreground/25'
-										}`}
-										style={{ width: `${(r.sessions / max) * 100}%` }}
-									/>
+									className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+										isDueNow
+											? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+											: 'bg-foreground/10 text-muted-foreground'
+									}`}>
+									{isDueNow ? 'Due Today' : n.nextReviewDate}
 								</span>
-							</td>
-							<td className="w-[48px] py-[6px] text-right text-muted-foreground tabular-nums">
-								{r.sessions}
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
+
+								<button
+									onClick={() =>
+										navigate(`/concept/new?noteId=${n.id}&topic=${encodeURIComponent(n.title)}`)
+									}
+									className="rounded-lg bg-[#e8c89b]/20 hover:bg-[#e8c89b]/30 px-2 py-1 text-[10px] font-bold text-[#e8c89b] border border-[#e8c89b]/40 transition">
+									Test 🎙️
+								</button>
+							</div>
+						</li>
+					)
+				})}
+			</ul>
 		</Shell>
 	)
 }
@@ -569,7 +561,7 @@ const VIEWS: Record<Kind, () => ReactNode> = {
 	weak: WeakConcepts,
 	explanations: Explanations,
 	lector: LectorScore,
-	modes: StudyModes,
+	modes: DueRevisions,
 	subjects: Subjects,
 }
 
