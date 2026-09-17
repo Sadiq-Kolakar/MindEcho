@@ -74,7 +74,7 @@ export function NotionWorkspace() {
               <ArrowLeft className="h-4 w-4" /> Back to Dashboard
             </Link>
             <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-              <span>Notion Notes Workspace</span>
+              <span>Subjects &amp; Stored Notes</span>
               <span className="rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 px-3 py-1 text-xs font-bold text-[#e8c89b]">
                 {notes.length} Notes Stored
               </span>
@@ -87,12 +87,12 @@ export function NotionWorkspace() {
               className="glass inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10"
             >
               <Plus className="h-4 w-4 text-[#e8c89b]" />
-              <span>New Notion Note</span>
+              <span>+ Add Note</span>
             </button>
 
             {activeNote && (
               <ShinyButton
-                label="Practice Feynman Method ✨"
+                label="Take Feynman Test 🎙️"
                 onClick={handlePracticeNote}
                 accentColor="#e8c89b"
                 accentSoftColor="#f5efe8"
@@ -116,14 +116,14 @@ export function NotionWorkspace() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search stored notes..."
+                  placeholder="Search notes across subjects..."
                   className="w-full bg-transparent text-xs text-white placeholder:text-white/40 outline-none"
                 />
               </div>
 
               {/* Subject Filter Pills */}
               <div className="mb-4 flex flex-wrap gap-1.5">
-                {['All', 'Computer Science', 'Physics & Engineering', 'Biology & Medicine'].map((subj) => (
+                {['All', 'Computer Science', 'Physics & Engineering', 'Biology & Medicine', 'Mathematics', 'General Studies'].map((subj) => (
                   <button
                     key={subj}
                     onClick={() => setSelectedSubject(subj)}

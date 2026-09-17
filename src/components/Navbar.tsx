@@ -67,10 +67,10 @@ export function Navbar() {
                 Dashboard
               </Link>
               <Link
-                to="/llm-payment"
-                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/85 transition hover:text-white hover:bg-white/10"
+                to="/subjects"
+                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#e8c89b] transition hover:text-white hover:bg-white/10"
               >
-                LLM Payment
+                Subjects &amp; Notes
               </Link>
               <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-[#f5efe8]">
                 <User className="h-3.5 w-3.5 text-[#e8c89b]" />
@@ -133,11 +133,11 @@ export function Navbar() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/llm-payment"
-                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#f5efe8] hover:bg-white/10"
+                  to="/subjects"
+                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#e8c89b] hover:bg-white/10"
                   onClick={() => setOpen(false)}
                 >
-                  LLM Payment
+                  Subjects &amp; Notes
                 </Link>
                 <button
                   onClick={() => {

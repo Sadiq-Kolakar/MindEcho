@@ -20,6 +20,7 @@ export default function App() {
             <Route path="/llm-payment" element={<LLMPayment />} />
             <Route path="/concept/new" element={<NewConcept />} />
             <Route path="/workspace" element={<NotionWorkspace />} />
+            <Route path="/subjects" element={<NotionWorkspace />} />
           </Routes>
         </BrowserRouter>
       </NotesProvider>

@@ -39,14 +39,17 @@ export function Dashboard() {
               cornerRadius={9999}
               className="px-5 py-2.5 text-xs font-semibold"
             />
-            <button className="glass rounded-full px-5 py-2.5 text-sm text-white/80 transition hover:bg-white/10">
-              Review Due Items
+            <button
+              onClick={() => navigate('/subjects')}
+              className="glass rounded-full px-5 py-2.5 text-sm text-white/80 transition hover:bg-white/10 flex items-center gap-2"
+            >
+              <span>Subjects &amp; Notes 📚</span>
             </button>
             <Link
-              to="/llm-payment"
-              className="glass rounded-full px-5 py-2.5 text-sm text-white/80 transition hover:bg-white/10"
+              to="/subjects"
+              className="glass rounded-full px-5 py-2.5 text-sm text-[#e8c89b] transition hover:bg-white/10 font-semibold"
             >
-              LLM Payment
+              Subjects Workspace
             </Link>
           </div>
         </motion.div>
