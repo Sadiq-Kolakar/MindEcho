@@ -67,7 +67,7 @@ export function Hero() {
                   .querySelector('#how-it-works')
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="glass inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white transition hover:bg-white/15"
+              className="glass inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white transition hover:bg-[#e8c89b]/15 hover:border-[#e8c89b]/40 hover:text-[#e8c89b]"
             >
               <Play className="h-4 w-4 fill-white text-white" />
               Watch How It Works

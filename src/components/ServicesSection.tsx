@@ -201,7 +201,7 @@ export function ServicesSection() {
               </thead>
               <tbody className="divide-y divide-white/10 text-xs sm:text-sm">
                 {comparisonData.map((row) => (
-                  <tr key={row.feature} className="hover:bg-white/5 transition-colors">
+                  <tr key={row.feature} className="hover:bg-[#e8c89b]/10 transition-colors">
                     <td className="py-4 px-4 font-semibold text-[#f5efe8]">
                       {row.feature}
                     </td>

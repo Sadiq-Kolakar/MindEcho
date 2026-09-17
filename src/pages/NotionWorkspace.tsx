@@ -86,7 +86,7 @@ export function NotionWorkspace() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleCreateNewNote}
-              className="glass inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-white/10"
+              className="glass inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#e8c89b]/15 hover:border-[#e8c89b]/40 hover:text-[#e8c89b]"
             >
               <Plus className="h-4 w-4 text-[#e8c89b]" />
               <span>+ Add Note</span>
@@ -132,7 +132,7 @@ export function NotionWorkspace() {
                     className={`rounded-full px-3 py-1 text-[11px] font-semibold transition border ${
                       selectedSubject === subj
                         ? 'border-[#e8c89b] bg-[#e8c89b]/20 text-[#e8c89b]'
-                        : 'border-white/10 glass text-white/60 hover:text-white'
+                        : 'border-white/10 glass text-white/60 hover:text-[#e8c89b] hover:border-[#e8c89b]/40'
                     }`}
                   >
                     {subj}
@@ -156,7 +156,7 @@ export function NotionWorkspace() {
                         className={`w-full text-left rounded-2xl p-3.5 transition border ${
                           isActive
                             ? 'border-[#e8c89b]/60 bg-[#e8c89b]/15 shadow-lg'
-                            : 'border-white/10 glass hover:bg-white/10'
+                            : 'border-white/10 glass hover:bg-[#e8c89b]/15 hover:border-[#e8c89b]/40'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">

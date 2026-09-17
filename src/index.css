@@ -74,51 +74,58 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(38, 30, 27, 0.7);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(232, 200, 155, 0.12);
 }
 
 .glass-strong {
-  background: rgba(43, 36, 33, 0.75);
+  background: rgba(42, 34, 30, 0.85);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(232, 200, 155, 0.18);
 }
 
 .glass-dark {
-  background: rgba(25, 20, 18, 0.85);
+  background: rgba(25, 20, 18, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    0 12px 36px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(232, 200, 155, 0.12);
 }
 
 .glass-hover {
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color 0.3s ease,
-    background-color 0.3s ease;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-hover:hover {
-  transform: translateY(-4px) scale(1.015);
-  border-color: rgba(232, 200, 155, 0.4);
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px) scale(1.012);
+  border-color: rgba(232, 200, 155, 0.5);
   box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 24px rgba(232, 200, 155, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 20px 48px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(232, 200, 155, 0.18),
+    inset 0 1px 0 rgba(232, 200, 155, 0.25);
+}
+
+.glass.glass-hover:hover {
+  background: rgba(48, 38, 34, 0.88);
+}
+
+.glass-dark.glass-hover:hover {
+  background: rgba(35, 28, 25, 0.96);
+}
+
+.glass-strong.glass-hover:hover {
+  background: rgba(52, 41, 36, 0.92);
 }
 
 .btn-glow {

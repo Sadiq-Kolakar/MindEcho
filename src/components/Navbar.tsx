@@ -46,7 +46,7 @@ export function Navbar() {
             <button
               key={link.label}
               onClick={() => handleNavClick(link.href)}
-              className="relative rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/80 transition-colors hover:text-white hover:bg-white/10"
+              className="relative rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/80 transition-colors hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
             >
               {link.label}
               {link.label === 'Home' && isHome && (
@@ -62,19 +62,19 @@ export function Navbar() {
             <>
               <Link
                 to="/dashboard"
-                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/85 transition hover:text-white hover:bg-white/10"
+                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/85 transition hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
               >
                 Dashboard
               </Link>
               <Link
                 to="/subjects"
-                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/85 transition hover:text-white hover:bg-white/10"
+                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#f5efe8]/85 transition hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
               >
                 Subjects &amp; Notes
               </Link>
               <Link
                 to="/calendar"
-                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#e8c89b] transition hover:text-white hover:bg-white/10"
+                className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#e8c89b] transition hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
               >
                 Calendar
               </Link>
@@ -84,7 +84,7 @@ export function Navbar() {
               </div>
               <button
                 onClick={logout}
-                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-white/60 transition hover:text-white hover:bg-white/10"
+                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-white/60 transition hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
               >
                 Logout
               </button>
@@ -104,7 +104,7 @@ export function Navbar() {
 
         {/* Mobile Hamburger */}
         <button
-          className="rounded-full p-2 text-white md:hidden hover:bg-white/10"
+          className="rounded-full p-2 text-white md:hidden hover:bg-[#e8c89b]/15"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -119,7 +119,7 @@ export function Navbar() {
             <button
               key={link.label}
               onClick={() => handleNavClick(link.href)}
-              className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-[#f5efe8] hover:bg-white/10"
+              className="block w-full rounded-xl px-4 py-3 text-left text-sm font-medium text-[#f5efe8] hover:bg-[#e8c89b]/15 hover:text-[#e8c89b]"
             >
               {link.label}
             </button>
@@ -133,14 +133,14 @@ export function Navbar() {
                 </div>
                 <Link
                   to="/dashboard"
-                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#f5efe8] hover:bg-white/10"
+                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#f5efe8] hover:bg-[#e8c89b]/15 hover:text-[#e8c89b]"
                   onClick={() => setOpen(false)}
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/subjects"
-                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#e8c89b] hover:bg-white/10"
+                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-[#e8c89b] hover:bg-[#e8c89b]/15 hover:text-[#e8c89b]"
                   onClick={() => setOpen(false)}
                 >
                   Subjects &amp; Notes
@@ -150,7 +150,7 @@ export function Navbar() {
                     logout()
                     setOpen(false)
                   }}
-                  className="block w-full rounded-xl px-4 py-2.5 text-left text-sm font-medium text-white/60 hover:text-white hover:bg-white/10"
+                  className="block w-full rounded-xl px-4 py-2.5 text-left text-sm font-medium text-white/60 hover:text-[#e8c89b] hover:bg-[#e8c89b]/15"
                 >
                   Logout
                 </button>

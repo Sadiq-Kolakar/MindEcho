@@ -164,10 +164,10 @@ export function AdaptiveCalendar() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowAddModal(true)}
-              className="glass inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs font-semibold text-[#e8c89b] transition hover:bg-white/10"
+              className="glass inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs font-semibold text-[#e8c89b] transition hover:bg-[#e8c89b]/15 hover:border-[#e8c89b]/40"
             >
               <Plus className="h-4 w-4 text-[#e8c89b]" />
-              <span>Mark Important Date ⭐</span>
+              <span>Mark Important Date</span>
             </button>
           </div>
         </div>
@@ -242,7 +242,7 @@ export function AdaptiveCalendar() {
 
               <button
                 onClick={() => setShowExamModal(true)}
-                className="glass rounded-full px-4 py-1.5 text-xs font-bold text-[#e8c89b] hover:bg-white/10 flex items-center gap-1.5"
+                className="glass rounded-full px-4 py-1.5 text-xs font-bold text-[#e8c89b] hover:bg-[#e8c89b]/15 hover:border-[#e8c89b]/40 flex items-center gap-1.5"
               >
                 <Settings className="h-3.5 w-3.5" /> Change Exam Date / Target
               </button>

@@ -41,13 +41,13 @@ export function Dashboard() {
             />
             <button
               onClick={() => navigate('/calendar')}
-              className="glass rounded-full px-5 py-2.5 text-sm font-semibold text-[#e8c89b] transition hover:bg-white/10 flex items-center gap-2 border border-[#e8c89b]/30 bg-[#e8c89b]/10"
+              className="glass rounded-full px-5 py-2.5 text-sm font-semibold text-[#e8c89b] transition hover:bg-[#e8c89b]/20 hover:border-[#e8c89b] flex items-center gap-2 border border-[#e8c89b]/30 bg-[#e8c89b]/10"
             >
               <span>Review Due Items &amp; Adaptive Calendar</span>
             </button>
             <Link
               to="/subjects"
-              className="glass rounded-full px-5 py-2.5 text-sm text-white/90 transition hover:bg-white/10 font-semibold"
+              className="glass rounded-full px-5 py-2.5 text-sm text-white/90 transition hover:bg-[#e8c89b]/20 hover:border-[#e8c89b] hover:text-[#e8c89b] font-semibold"
             >
               Subjects &amp; Notes
             </Link>
