@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatedCharacter } from './AnimatedCharacter'
 import { ShinyButton } from './ui/shiny-button'
 
-const avatars = ['A', 'R', 'S', 'K', 'M']
-
 export function Hero() {
   const navigate = useNavigate()
 
@@ -66,31 +64,6 @@ export function Hero() {
               Watch How It Works
             </button>
           </div>
-
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex -space-x-2">
-              {avatars.map((letter, i) => (
-                <div
-                  key={letter}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/20 bg-white/10 text-xs font-semibold text-[#f5efe8] backdrop-blur-sm"
-                  style={{ zIndex: avatars.length - i }}
-                >
-                  {letter}
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-[#f5efe8]/70">
-              Join 10,000+ curious learners mastering technical concepts.
-            </p>
-          </div>
-
-          {/* Relatable Connection Story Box */}
-          <div className="glass rounded-2xl border border-white/15 p-4 text-xs leading-relaxed text-[#f5efe8]/80 backdrop-blur-md max-w-lg">
-            <p className="font-semibold text-[#e8c89b] mb-1">
-              &ldquo;I used to re-read notes 10 times and still forget core topics on exam day. MemoRoute&apos;s active Feynman voice feedback helped me retain 94% of my syllabus.&rdquo;
-            </p>
-            <p className="text-[11px] text-white/50 text-right">— Alex M., CS &amp; Pre-Med Student</p>
-          </div>
         </motion.div>
 
         <motion.div
@@ -105,3 +78,4 @@ export function Hero() {
   )
 }
 
+export default Hero;
