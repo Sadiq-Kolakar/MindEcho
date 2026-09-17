@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { LearningDashboardGrid } from '../components/dashboard/LearningDashboardGrid'
 import { Navbar } from '../components/Navbar'
 import { ShinyButton } from '../components/ui/shiny-button'
@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext'
 
 export function Dashboard() {
   const { isAuthenticated, user } = useAuth()
+  const navigate = useNavigate()
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
@@ -30,7 +31,8 @@ export function Dashboard() {
           </p>
           <div className="mt-4 flex flex-wrap gap-3 items-center">
             <ShinyButton
-              label="Start New Concept"
+              label="Start New Concept +"
+              onClick={() => navigate('/concept/new')}
               accentColor="#e8c89b"
               accentSoftColor="#f5efe8"
               fillColor="#2b2421"

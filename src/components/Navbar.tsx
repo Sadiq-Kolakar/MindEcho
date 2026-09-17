@@ -6,10 +6,10 @@ import { ShinyButton } from './ui/shiny-button'
 
 const navLinks = [
   { label: 'Home', href: '#home' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Features', href: '#features' },
-  { label: 'Why Us', href: '#why-us' },
-  { label: 'Exam Mode', href: '#exam-mode' },
+  { label: 'Services', href: '#services' },
+  { label: 'About Us', href: '#about-us' },
+  { label: 'Blog', href: '#blog' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 export function Navbar() {
