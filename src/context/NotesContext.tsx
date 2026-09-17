@@ -83,7 +83,7 @@ const DEFAULT_NOTES: NoteItem[] = [
     id: 'note-1',
     title: 'Binary Search Trees & Traversal',
     subject: 'Computer Science',
-    icon: '🌲',
+    icon: 'code',
     content: `# Binary Search Trees (BST)
 
 A Binary Search Tree is a node-based binary tree data structure which has the following properties:
@@ -110,7 +110,7 @@ In-Order traversal (Left, Root, Right) yields node values in strictly sorted asc
     id: 'note-2',
     title: 'Thermodynamics & Entropy Laws',
     subject: 'Physics & Engineering',
-    icon: '⚡',
+    icon: 'zap',
     content: `# Second Law of Thermodynamics
 
 The total entropy of an isolated system can never decrease over time. Microscopic disorder naturally increases in irreversible processes.
@@ -131,7 +131,7 @@ The total entropy of an isolated system can never decrease over time. Microscopi
     id: 'note-3',
     title: 'Neural Networks & Backpropagation',
     subject: 'Computer Science',
-    icon: '🧠',
+    icon: 'brain',
     content: `# Neural Network Backpropagation
 
 Backpropagation calculates the gradient of the loss function with respect to each weight using the Chain Rule of calculus.
@@ -153,7 +153,7 @@ Backpropagation calculates the gradient of the loss function with respect to eac
     id: 'note-4',
     title: 'Photosynthesis & Light Reactions',
     subject: 'Biology & Medicine',
-    icon: '🌿',
+    icon: 'leaf',
     content: `# Photosynthesis Light-Dependent Reactions
 
 Occurs inside the thylakoid membranes of chloroplasts. Converts solar light energy into chemical energy (ATP and NADPH).
@@ -164,10 +164,10 @@ Occurs inside the thylakoid membranes of chloroplasts. Converts solar light ener
 - **Photosystem I (P700)**: Re-excites electrons to reduce $NADP^+$ to $NADPH$.
 - **ATP Synthase**: Uses proton motive force to synthesize ATP via chemiosmosis.`,
     createdAt: '2026-09-15',
-    updatedAt: '2026-09-17',
-    lectorScore: 8.4,
+    updatedAt: '2026-09-16',
+    lectorScore: 8.0,
     practiceCount: 2,
-    lastPracticed: '2026-09-15',
+    lastPracticed: '2026-09-16',
     retentionHealth: 82,
     nextReviewDate: '2026-09-18',
   },
@@ -217,7 +217,7 @@ const DATES_STORAGE_KEY = 'memoroute_important_dates'
 const DEFAULT_IMPORTANT_DATES: ImportantDateItem[] = [
   {
     id: 'date-1',
-    title: 'Final CS Midterm Exam ⭐',
+    title: 'Final CS Midterm Exam',
     date: '2026-09-25',
     subject: 'Computer Science',
     priority: 'high',
@@ -225,7 +225,7 @@ const DEFAULT_IMPORTANT_DATES: ImportantDateItem[] = [
   },
   {
     id: 'date-2',
-    title: 'Thermodynamics Quiz ⚡',
+    title: 'Thermodynamics Quiz',
     date: '2026-09-28',
     subject: 'Physics & Engineering',
     priority: 'medium',
@@ -233,7 +233,7 @@ const DEFAULT_IMPORTANT_DATES: ImportantDateItem[] = [
   },
   {
     id: 'date-3',
-    title: 'Biology Lab Evaluation 🌿',
+    title: 'Biology Lab Evaluation',
     date: '2026-10-02',
     subject: 'Biology & Medicine',
     priority: 'low',

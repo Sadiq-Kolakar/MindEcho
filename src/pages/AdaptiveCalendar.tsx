@@ -7,10 +7,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  GraduationCap,
   Plus,
+  Settings,
   Sparkles,
   Star,
   Trash2,
+  X,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -179,14 +182,14 @@ export function AdaptiveCalendar() {
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 {studyMode === 'exam' ? (
                   <>
-                    <span>🎓 Exam Mode (Accelerated Revisions)</span>
+                    <span className="flex items-center gap-2"><GraduationCap className="h-5 w-5 text-[#e8c89b]" /> Exam Mode (Accelerated Revisions)</span>
                     <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-0.5 text-xs text-amber-300 font-bold">
                       {daysUntilExam} Days Left Until Exam
                     </span>
                   </>
                 ) : (
                   <>
-                    <span>🧠 Skill Mastery Mode (No Time Limit)</span>
+                    <span className="flex items-center gap-2"><Brain className="h-5 w-5 text-[#e8c89b]" /> Skill Mastery Mode (No Time Limit)</span>
                     <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-3 py-0.5 text-xs text-emerald-300 font-bold">
                       Lifelong Spaced Repetition
                     </span>
@@ -210,7 +213,8 @@ export function AdaptiveCalendar() {
                     : 'text-white/60 hover:text-white'
                 }`}
               >
-                <span>🎓 Exam Mode</span>
+                <GraduationCap className="h-4 w-4" />
+                <span>Exam Mode</span>
               </button>
 
               <button
@@ -221,7 +225,8 @@ export function AdaptiveCalendar() {
                     : 'text-white/60 hover:text-white'
                 }`}
               >
-                <span>🧠 Skill Mode</span>
+                <Brain className="h-4 w-4" />
+                <span>Skill Mode</span>
               </button>
             </div>
           </div>
@@ -237,9 +242,9 @@ export function AdaptiveCalendar() {
 
               <button
                 onClick={() => setShowExamModal(true)}
-                className="glass rounded-full px-4 py-1.5 text-xs font-bold text-[#e8c89b] hover:bg-white/10"
+                className="glass rounded-full px-4 py-1.5 text-xs font-bold text-[#e8c89b] hover:bg-white/10 flex items-center gap-1.5"
               >
-                ⚙️ Change Exam Date / Target
+                <Settings className="h-3.5 w-3.5" /> Change Exam Date / Target
               </button>
             </div>
           )}
@@ -257,7 +262,7 @@ export function AdaptiveCalendar() {
               </span>
             </div>
             <p className="mt-2 text-2xl font-bold text-white">
-              {totalDueToday.length > 0 ? `${totalDueToday.length} Topics Ready` : 'All Topics Up To Date 🎉'}
+              {totalDueToday.length > 0 ? `${totalDueToday.length} Topics Ready` : 'All Topics Up To Date'}
             </p>
             <p className="mt-1 text-[11px] text-white/60">
               {studyMode === 'exam' ? 'Compressed for exam readiness' : 'Scheduled by retention decay curve'}
@@ -532,7 +537,7 @@ export function AdaptiveCalendar() {
                       </div>
 
                       <ShinyButton
-                        label="Start Feynman Practice Test 🎙️"
+                        label="Start Feynman Practice Test"
                         onClick={() =>
                           navigate(
                             `/concept/new?noteId=${note.id}&topic=${encodeURIComponent(note.title)}`,
@@ -577,9 +582,9 @@ export function AdaptiveCalendar() {
                 </h3>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="text-xs text-white/60 hover:text-white"
+                  className="text-xs text-white/60 hover:text-white flex items-center gap-1"
                 >
-                  ✕ Close
+                  <X className="h-4 w-4" /> Close
                 </button>
               </div>
 
@@ -593,7 +598,7 @@ export function AdaptiveCalendar() {
                     required
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="e.g. Midterm Physics Exam ⭐"
+                    placeholder="e.g. Midterm Physics Exam"
                     className="glass w-full rounded-2xl border border-white/15 px-4 py-2.5 text-xs text-white outline-none focus:border-[#e8c89b]"
                   />
                 </div>
@@ -636,9 +641,9 @@ export function AdaptiveCalendar() {
                     onChange={(e) => setNewPriority(e.target.value as 'high' | 'medium' | 'low')}
                     className="glass w-full rounded-2xl border border-white/15 px-4 py-2.5 text-xs text-white outline-none"
                   >
-                    <option value="high" className="bg-[#1e1917]">High Priority ⭐⭐⭐</option>
-                    <option value="medium" className="bg-[#1e1917]">Medium Priority ⭐⭐</option>
-                    <option value="low" className="bg-[#1e1917]">Low Priority ⭐</option>
+                    <option value="high" className="bg-[#1e1917]">High Priority</option>
+                    <option value="medium" className="bg-[#1e1917]">Medium Priority</option>
+                    <option value="low" className="bg-[#1e1917]">Low Priority</option>
                   </select>
                 </div>
 
@@ -665,7 +670,7 @@ export function AdaptiveCalendar() {
                   </button>
 
                   <ShinyButton
-                    label="Save Event Date ⭐"
+                    label="Save Event Date"
                     onClick={() => {}}
                     accentColor="#e8c89b"
                     accentSoftColor="#f5efe8"
@@ -689,13 +694,14 @@ export function AdaptiveCalendar() {
             >
               <div className="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>🎓 Set Target Exam &amp; Date</span>
+                  <GraduationCap className="h-5 w-5 text-[#e8c89b]" />
+                  <span>Set Target Exam &amp; Date</span>
                 </h3>
                 <button
                   onClick={() => setShowExamModal(false)}
-                  className="text-xs text-white/60 hover:text-white"
+                  className="text-xs text-white/60 hover:text-white flex items-center gap-1"
                 >
-                  ✕ Close
+                  <X className="h-4 w-4" /> Close
                 </button>
               </div>
 
@@ -709,7 +715,7 @@ export function AdaptiveCalendar() {
                     required
                     value={tempExamTitle}
                     onChange={(e) => setTempExamTitle(e.target.value)}
-                    placeholder="e.g. Final CS Midterm Exam ⭐"
+                    placeholder="e.g. Final CS Midterm Exam"
                     className="glass w-full rounded-2xl border border-white/15 px-4 py-2.5 text-xs text-white outline-none focus:border-[#e8c89b]"
                   />
                 </div>
@@ -740,7 +746,7 @@ export function AdaptiveCalendar() {
                   </button>
 
                   <ShinyButton
-                    label="Activate Accelerated Exam Mode 🎓"
+                    label="Activate Accelerated Exam Mode"
                     onClick={() => {}}
                     accentColor="#e8c89b"
                     accentSoftColor="#f5efe8"

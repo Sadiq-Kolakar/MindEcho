@@ -215,13 +215,13 @@ export function ContactSection() {
 
                 {submitted && (
                   <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/15 p-4 text-center text-xs font-semibold text-emerald-300">
-                    ✓ Message sent successfully! We will contact you at {email}.
+                    Message sent successfully! We will contact you at {email}.
                   </div>
                 )}
 
                 <ShinyButton
                   type="submit"
-                  label={submitted ? 'Message Sent ✓' : 'Send Message →'}
+                  label={submitted ? 'Message Sent' : 'Send Message'}
                   accentColor="#e8c89b"
                   accentSoftColor="#f5efe8"
                   fillColor="#2b2421"

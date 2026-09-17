@@ -2,25 +2,25 @@ import {
   ArrowLeft,
   BookOpen,
   Brain,
+  Mic,
   Plus,
   Search,
-  Sparkles,
   Trash2,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { GlassCard } from '../components/GlassCard'
 import { Navbar } from '../components/Navbar'
+import { ReadingProgress } from '../components/ui/reading-progress'
 import { ShinyButton } from '../components/ui/shiny-button'
 import { useAuth } from '../context/AuthContext'
 import { useNotes } from '../context/NotesContext'
-
-const EMOJIS = ['🌲', '⚡', '🧠', '🌿', '💡', '💻', '🧪', '📚', '🎯', '⚙️']
 
 export function NotionWorkspace() {
   const { isAuthenticated } = useAuth()
   const { notes, activeNoteId, setActiveNoteId, addNote, updateNote, deleteNote } = useNotes()
   const navigate = useNavigate()
+  const scrollerRef = useRef<HTMLTextAreaElement>(null)
 
   const [search, setSearch] = useState('')
   const [selectedSubject, setSelectedSubject] = useState<string>('All')
@@ -48,7 +48,7 @@ export function NotionWorkspace() {
       title: 'Untitled Notion Note',
       subject: 'Computer Science',
       content: '# New Concept Notes\n\nStart typing your study notes here...',
-      icon: '💡',
+      icon: 'note',
     })
     setActiveNoteId(created.id)
   }
@@ -58,6 +58,8 @@ export function NotionWorkspace() {
     if (!activeNote) return
     navigate(`/concept/new?noteId=${activeNote.id}&topic=${encodeURIComponent(activeNote.title)}`)
   }
+
+  const wordCount = activeNote ? activeNote.content.split(/\s+/).filter(Boolean).length : 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1e1917] via-[#2a2421] to-[#14100e] text-[#f5efe8]">
@@ -92,7 +94,7 @@ export function NotionWorkspace() {
 
             {activeNote && (
               <ShinyButton
-                label="Take Feynman Test 🎙️"
+                label="Take Feynman Test"
                 onClick={handlePracticeNote}
                 accentColor="#e8c89b"
                 accentSoftColor="#f5efe8"
@@ -142,7 +144,7 @@ export function NotionWorkspace() {
               <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1 scrollbar-thin">
                 {filteredNotes.length === 0 ? (
                   <p className="py-8 text-center text-xs text-white/50">
-                    No notes match your search. Click &ldquo;New Notion Note&rdquo; to add one!
+                    No notes match your search. Click &ldquo;+ Add Note&rdquo; to add one!
                   </p>
                 ) : (
                   filteredNotes.map((note) => {
@@ -159,7 +161,7 @@ export function NotionWorkspace() {
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-2.5 truncate">
-                            <span className="text-lg">{note.icon}</span>
+                            <BookOpen className="h-4 w-4 text-[#e8c89b] shrink-0" />
                             <span className="text-xs font-bold text-white truncate">
                               {note.title}
                             </span>
@@ -208,7 +210,7 @@ export function NotionWorkspace() {
                       onClick={handlePracticeNote}
                       className="btn-glow inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold shadow-md"
                     >
-                      <Sparkles className="h-3.5 w-3.5" />
+                      <Mic className="h-3.5 w-3.5" />
                       <span>Practice Feynman Method</span>
                     </button>
 
@@ -222,29 +224,12 @@ export function NotionWorkspace() {
                   </div>
                 </div>
 
-                {/* Emoji Icon Picker Bar & Title */}
+                {/* Title & Subject Category */}
                 <div className="mb-6">
-                  <div className="mb-3 flex items-center gap-2">
-                    <span className="text-xs font-bold text-white/50">Icon:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {EMOJIS.map((emoji) => (
-                        <button
-                          key={emoji}
-                          onClick={() => updateNote(activeNote.id, { icon: emoji })}
-                          className={`h-7 w-7 rounded-lg text-sm flex items-center justify-center transition ${
-                            activeNote.icon === emoji
-                              ? 'bg-[#e8c89b] text-[#1e1917]'
-                              : 'hover:bg-white/10'
-                          }`}
-                        >
-                          {emoji}
-                        </button>
-                      ))}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e8c89b]/15 border border-[#e8c89b]/30">
+                      <BookOpen className="h-5 w-5 text-[#e8c89b]" />
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{activeNote.icon}</span>
                     <input
                       type="text"
                       value={activeNote.title}
@@ -253,21 +238,28 @@ export function NotionWorkspace() {
                       className="w-full bg-transparent text-2xl font-bold text-white outline-none border-b border-white/10 pb-2 focus:border-[#e8c89b]"
                     />
                   </div>
+
+                  <div className="flex items-center gap-4 text-xs">
+                    <span className="text-white/50 font-semibold">Subject Category:</span>
+                    <select
+                      value={activeNote.subject}
+                      onChange={(e) => updateNote(activeNote.id, { subject: e.target.value })}
+                      className="glass rounded-xl border border-white/15 px-3 py-1.5 text-xs text-[#e8c89b] font-semibold outline-none"
+                    >
+                      <option value="Computer Science" className="bg-[#1e1917]">Computer Science</option>
+                      <option value="Physics & Engineering" className="bg-[#1e1917]">Physics &amp; Engineering</option>
+                      <option value="Biology & Medicine" className="bg-[#1e1917]">Biology &amp; Medicine</option>
+                      <option value="Mathematics" className="bg-[#1e1917]">Mathematics</option>
+                    </select>
+                  </div>
                 </div>
 
-                {/* Category Selector */}
-                <div className="mb-6 flex items-center gap-4 text-xs">
-                  <span className="text-white/50 font-semibold">Subject Category:</span>
-                  <select
-                    value={activeNote.subject}
-                    onChange={(e) => updateNote(activeNote.id, { subject: e.target.value })}
-                    className="glass rounded-xl border border-white/15 px-3 py-1.5 text-xs text-[#e8c89b] font-semibold outline-none"
-                  >
-                    <option value="Computer Science" className="bg-[#1e1917]">Computer Science</option>
-                    <option value="Physics & Engineering" className="bg-[#1e1917]">Physics &amp; Engineering</option>
-                    <option value="Biology & Medicine" className="bg-[#1e1917]">Biology &amp; Medicine</option>
-                    <option value="Mathematics" className="bg-[#1e1917]">Mathematics</option>
-                  </select>
+                {/* Reading Progress Component Bar */}
+                <div className="mb-4 rounded-xl border border-white/10 bg-white/5 p-3">
+                  <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#e8c89b]">
+                    Live Reading Progress Indicator
+                  </span>
+                  <ReadingProgress scroller={scrollerRef} words={wordCount} />
                 </div>
 
                 {/* Main Notion Content Textarea */}
@@ -277,11 +269,12 @@ export function NotionWorkspace() {
                       Notion Markdown Content
                     </span>
                     <span>
-                      {activeNote.content.split(/\s+/).filter(Boolean).length} Words &bull; {activeNote.content.length} Chars
+                      {wordCount} Words &bull; {activeNote.content.length} Chars
                     </span>
                   </div>
 
                   <textarea
+                    ref={scrollerRef}
                     rows={16}
                     value={activeNote.content}
                     onChange={(e) => updateNote(activeNote.id, { content: e.target.value })}
@@ -297,7 +290,7 @@ export function NotionWorkspace() {
                   </div>
 
                   <ShinyButton
-                    label="Practice Feynman Method with this Note ✨"
+                    label="Practice Feynman Method with this Note"
                     onClick={handlePracticeNote}
                     accentColor="#e8c89b"
                     accentSoftColor="#f5efe8"

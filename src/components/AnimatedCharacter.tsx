@@ -385,7 +385,7 @@ export function AnimatedCharacter() {
         transition={{ delay: 1 }}
         className="mt-2 text-[11px] font-semibold text-[#e8c89b]/75 tracking-wider uppercase"
       >
-        ✨ Move mouse to tilt 3D Robot &bull; Click to chat
+        Move mouse to tilt 3D Robot &bull; Click to chat
       </motion.p>
     </div>
   )

@@ -76,7 +76,7 @@ export function Navbar() {
                 to="/calendar"
                 className="rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#e8c89b] transition hover:text-white hover:bg-white/10"
               >
-                Calendar 📅
+                Calendar
               </Link>
               <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-[#f5efe8]">
                 <User className="h-3.5 w-3.5 text-[#e8c89b]" />

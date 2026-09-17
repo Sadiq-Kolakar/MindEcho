@@ -159,7 +159,7 @@ export function LLMPayment() {
             </div>
           </div>
           <ShinyButton
-            label={saved ? 'Plan Saved ✓' : 'Save Plan Selection'}
+            label={saved ? 'Plan Saved' : 'Save Plan Selection'}
             onClick={handleSave}
             accentColor="#e8c89b"
             accentSoftColor="#f5efe8"

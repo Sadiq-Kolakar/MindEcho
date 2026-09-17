@@ -190,6 +190,25 @@ body {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border-width: 0;
+  border: 0;
 }
+
+.mat-panel {
+  background: var(--panel, #1d1d1a);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.14));
+  box-shadow: var(--shadow-lift);
+}
+
+.mat-well {
+  background: var(--well, #252522);
+  box-shadow: var(--shadow-well);
+}
+
+.no-bar {
+  scrollbar-width: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
+
 

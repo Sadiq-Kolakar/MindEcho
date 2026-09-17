@@ -504,8 +504,8 @@ function DueRevisions() {
 									onClick={() =>
 										navigate(`/concept/new?noteId=${n.id}&topic=${encodeURIComponent(n.title)}`)
 									}
-									className="rounded-lg bg-[#e8c89b]/20 hover:bg-[#e8c89b]/30 px-2 py-1 text-[10px] font-bold text-[#e8c89b] border border-[#e8c89b]/40 transition">
-									Test 🎙️
+									className="rounded-lg bg-[#e8c89b]/20 hover:bg-[#e8c89b]/30 px-2.5 py-1 text-[10px] font-bold text-[#e8c89b] border border-[#e8c89b]/40 transition">
+									Practice Test
 								</button>
 							</div>
 						</li>
