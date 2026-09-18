@@ -16,7 +16,7 @@ const samuelMessages = [
 export function AnimatedCharacter() {
   const [msgIndex, setMsgIndex] = useState(0)
   const [isChatOpen, setIsChatOpen] = useState(false)
-  const [show3d, setShow3d] = useState(false)
+  const [isSplineLoaded, setIsSplineLoaded] = useState(false)
 
   // Auto-change Samuel's message every 4 seconds
   useEffect(() => {
@@ -24,21 +24,6 @@ export function AnimatedCharacter() {
       setMsgIndex((prev) => (prev + 1) % samuelMessages.length)
     }, 4000)
     return () => clearInterval(timer)
-  }, [])
-
-  useEffect(() => {
-    const win = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
-      cancelIdleCallback?: (id: number) => void
-    }
-
-    if (win.requestIdleCallback) {
-      const id = win.requestIdleCallback(() => setShow3d(true), { timeout: 2000 })
-      return () => win.cancelIdleCallback?.(id)
-    }
-
-    const timer = window.setTimeout(() => setShow3d(true), 900)
-    return () => window.clearTimeout(timer)
   }, [])
 
   const handleRobotClick = () => {
@@ -96,22 +81,26 @@ export function AnimatedCharacter() {
         {/* Warm Studio Ambient Glow */}
         <div className="absolute inset-0 mx-auto my-auto h-[400px] w-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,200,155,0.25)_0%,rgba(232,200,155,0.08)_50%,transparent_75%)] pointer-events-none transition-all duration-500 group-hover:scale-115 group-hover:bg-[radial-gradient(circle,rgba(232,200,155,0.45)_0%,rgba(232,200,155,0.18)_55%,transparent_80%)] blur-3xl" />
 
-        {/* Real Interactive 3D Spline Robot Model (Samuel) */}
-        <div className="w-full h-full relative z-10 scale-85 sm:scale-90 origin-center transition-transform duration-500">
-          {show3d ? (
-            <SplineScene
-              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-              className="w-full h-full"
-            />
-          ) : (
-            <img
-              src="/hero-character.png"
-              alt="Samuel AI assistant"
-              className="mx-auto h-full w-auto max-h-[480px] object-contain drop-shadow-2xl"
-              loading="lazy"
-              decoding="async"
-            />
-          )}
+        {/* Instant 2D Fallback Image (Rendered 0ms on mount) */}
+        <img
+          src="/hero-character.png"
+          alt="Samuel AI assistant"
+          className={`absolute inset-0 mx-auto h-full w-auto max-h-[480px] object-contain drop-shadow-2xl transition-opacity duration-700 pointer-events-none ${
+            isSplineLoaded ? 'opacity-0' : 'opacity-100'
+          }`}
+          loading="eager"
+          decoding="sync"
+        />
+
+        {/* Real Interactive 3D Spline Robot Model (Smooth fade-in on load) */}
+        <div className={`w-full h-full relative z-10 scale-85 sm:scale-90 origin-center transition-opacity duration-700 ${
+          isSplineLoaded ? 'opacity-100' : 'opacity-0'
+        }`}>
+          <SplineScene
+            scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+            className="w-full h-full"
+            onLoad={() => setIsSplineLoaded(true)}
+          />
         </div>
       </motion.div>
 

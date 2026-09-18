@@ -1,8 +1,9 @@
 import { lazy, Suspense, type ReactNode } from 'react'
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { NotesProvider } from './context/NotesContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
+import { ThemeProvider } from './context/ThemeContext'
 import { PageLoader } from './components/ui/page-loader'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
@@ -25,15 +26,12 @@ const NotionWorkspace = lazy(() =>
 const AdaptiveCalendar = lazy(() =>
   import('./pages/AdaptiveCalendar').then((m) => ({ default: m.AdaptiveCalendar })),
 )
-const FloatingAIBot = lazy(() =>
-  import('./components/FloatingAIBot').then((m) => ({ default: m.FloatingAIBot })),
-)
 
 function LazyPage({ children }: { children: ReactNode }) {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-[#1e1917] via-[#2a2421] to-[#14100e]">
+        <div className="theme-page min-h-screen">
           <PageLoader />
         </div>
       }
@@ -44,12 +42,8 @@ function LazyPage({ children }: { children: ReactNode }) {
 }
 
 function AppRoutes() {
-  const location = useLocation()
-  const showBot = location.pathname === '/'
-
   return (
-    <>
-      <Routes>
+    <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route
@@ -116,26 +110,22 @@ function AppRoutes() {
             </LazyPage>
           }
         />
-      </Routes>
-      {showBot && (
-        <Suspense fallback={null}>
-          <FloatingAIBot />
-        </Suspense>
-      )}
-    </>
+    </Routes>
   )
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <SubscriptionProvider>
-        <NotesProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </NotesProvider>
-      </SubscriptionProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <NotesProvider>
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </NotesProvider>
+        </SubscriptionProvider>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }

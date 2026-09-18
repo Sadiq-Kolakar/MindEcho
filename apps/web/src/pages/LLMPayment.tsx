@@ -100,7 +100,7 @@ export function LLMPayment() {
       ])
 
   return (
-    <div className="min-h-screen bg-[#1e1917] text-white">
+    <div className="theme-page-solid min-h-screen text-white">
       <Navbar />
 
       <div className="pt-20">

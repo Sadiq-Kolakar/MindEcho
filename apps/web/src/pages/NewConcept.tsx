@@ -332,7 +332,7 @@ export function NewConcept() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e1917] via-[#2a2421] to-[#14100e] text-[#f5efe8]">
+    <div className="theme-page min-h-screen text-[#f5efe8]">
       <Navbar />
 
       <main className="mx-auto max-w-4xl px-4 pt-28 pb-20 sm:px-6">

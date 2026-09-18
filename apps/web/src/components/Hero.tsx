@@ -1,7 +1,6 @@
-import { motion } from 'framer-motion'
 import { Play, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { DeferredAnimatedCharacter } from './DeferredAnimatedCharacter'
+import { HeroCharacter } from './HeroCharacter'
 import { ShinyButton } from './ui/shiny-button'
 
 const avatars = ['A', 'R', 'S', 'K', 'M']
@@ -24,13 +23,8 @@ export function Hero() {
         }}
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-8">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
-          className="text-left"
-        >
+      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-2 lg:gap-8">
+        <div className="order-2 text-left lg:order-1">
           {/* Top Pill Badge */}
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#e8c89b]/30 bg-[#e8c89b]/10 px-3.5 py-1.5 backdrop-blur-md">
             <Sparkles className="h-3.5 w-3.5 text-[#e8c89b]" />
@@ -39,7 +33,7 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
+          <h1 className="mb-5 text-3xl leading-tight font-bold tracking-tight text-white sm:mb-6 sm:text-5xl lg:text-[3.25rem]">
             Understand Today.
             <br />
             <span className="font-script text-[#e8c89b] font-normal text-4xl sm:text-5xl lg:text-6xl">
@@ -47,12 +41,12 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="mb-8 max-w-lg text-base leading-relaxed text-[#f5efe8]/80 sm:text-lg">
+          <p className="mb-6 max-w-lg text-sm leading-relaxed text-[#f5efe8]/80 sm:mb-8 sm:text-lg">
             MemoRoute helps you truly understand, retain and perform better using
             the power of Samuel LECTOR AI evaluation and personalized spaced repetition.
           </p>
 
-          <div className="mb-8 flex flex-wrap gap-4 items-center">
+          <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <ShinyButton
               label="Start Learning →"
               onClick={() => navigate('/login')}
@@ -76,7 +70,7 @@ export function Hero() {
           </div>
 
           {/* Social Proof & Learner Avatars */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:gap-3">
             <div className="flex -space-x-2">
               {avatars.map((letter, i) => (
                 <div
@@ -88,27 +82,23 @@ export function Hero() {
                 </div>
               ))}
             </div>
-            <p className="text-sm text-[#f5efe8]/70">
+            <p className="text-xs text-[#f5efe8]/70 sm:text-sm">
               Join thousands mastering technical concepts with Samuel AI.
             </p>
           </div>
 
           {/* Relatable Connection Story Box */}
-          <div className="glass rounded-2xl border border-white/15 p-4 text-xs leading-relaxed text-[#f5efe8]/80 backdrop-blur-md max-w-lg">
+          <div className="glass hidden rounded-2xl border border-white/15 p-4 text-xs leading-relaxed text-[#f5efe8]/80 backdrop-blur-md max-w-lg sm:block">
             <p className="font-semibold text-[#e8c89b] mb-1">
               &ldquo;I used to re-read notes 10 times and still forget core topics on exam day. MemoRoute&apos;s active Feynman voice feedback with Samuel AI helped me retain 94% of my syllabus.&rdquo;
             </p>
             <p className="text-[11px] text-white/50 text-right">— Alex M., CS &amp; Pre-Med Student</p>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.45, delay: 0.08, ease: 'easeOut' }}
-        >
-          <DeferredAnimatedCharacter />
-        </motion.div>
+        <div className="order-1 lg:order-2">
+          <HeroCharacter />
+        </div>
       </div>
     </section>
   )

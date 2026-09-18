@@ -2,6 +2,8 @@ import { Brain, Menu, User, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
+import { ThemeToggle } from './ThemeToggle'
 import { ShinyButton } from './ui/shiny-button'
 
 const navLinks = [
@@ -15,6 +17,7 @@ const navLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { isAuthenticated, logout, user } = useAuth()
+  const { isMonochrome } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
@@ -31,7 +34,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 px-4 pt-4 sm:px-6">
-      <nav className="glass mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/15 px-5 py-3 shadow-2xl backdrop-blur-xl">
+      <nav className="glass glass-hover mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/15 px-5 py-3 shadow-2xl backdrop-blur-xl">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2.5 text-white group">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8c89b]/15 border border-[#e8c89b]/30 transition group-hover:scale-105">
@@ -58,6 +61,7 @@ export function Navbar() {
 
         {/* Right User Controls */}
         <div className="hidden items-center gap-2 lg:gap-3 md:flex">
+          <ThemeToggle />
           {isAuthenticated ? (
             <>
               <Link
@@ -93,9 +97,9 @@ export function Navbar() {
             <ShinyButton
               label="Get Started →"
               onClick={() => navigate('/login')}
-              accentColor="#e8c89b"
-              accentSoftColor="#f5efe8"
-              fillColor="#2b2421"
+              accentColor={isMonochrome ? '#ffffff' : '#e8c89b'}
+              accentSoftColor={isMonochrome ? '#f7f7f7' : '#f5efe8'}
+              fillColor={isMonochrome ? '#111111' : '#2b2421'}
               cornerRadius={9999}
               className="px-4 py-2 text-xs font-bold"
             />
@@ -125,6 +129,9 @@ export function Navbar() {
             </button>
           ))}
           <div className="mt-2 border-t border-white/10 pt-3">
+            <div className="mb-3 px-2">
+              <ThemeToggle className="w-full justify-center" />
+            </div>
             {isAuthenticated ? (
               <div className="space-y-1">
                 <div className="flex items-center gap-2 px-4 py-2 text-xs text-[#e8c89b]">

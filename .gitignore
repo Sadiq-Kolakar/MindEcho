@@ -17,6 +17,12 @@ dist-ssr
 .env.*
 !.env.example
 
+# Local runtime storage (uploaded audio)
+apps/api/storage/audio/
+
+# Legacy local exports
+v2.saish/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

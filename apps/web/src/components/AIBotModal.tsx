@@ -76,7 +76,7 @@ export function AIBotModal({ isOpen, onClose }: AIBotModalProps) {
 
       setMessages((prev) => [...prev, botMsg])
       setIsTyping(false)
-    }, 1000)
+    }, 200)
   }
 
   return (

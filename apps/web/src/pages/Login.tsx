@@ -3,6 +3,7 @@ import { Brain, Eye, EyeOff, Lock, Mail, User } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { ShinyButton } from '../components/ui/shiny-button'
 import { useApi } from '../lib/api/client'
 
@@ -37,10 +38,12 @@ export function Login() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1e1917] via-[#2a2421] to-[#14100e]" />
+    <div className="theme-page relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
       <div
-        className="absolute inset-0 opacity-30 pointer-events-none"
+        className="theme-glow-radial absolute inset-0 opacity-30 pointer-events-none"
         style={{
           backgroundImage:
             'radial-gradient(circle at 30% 40%, rgba(232,200,155,0.2) 0%, transparent 50%)',

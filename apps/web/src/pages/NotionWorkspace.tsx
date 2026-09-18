@@ -28,6 +28,86 @@ export function NotionWorkspace() {
   const [search, setSearch] = useState('')
   const [selectedSubject, setSelectedSubject] = useState<string>('All')
   const [noteEvaluations, setNoteEvaluations] = useState<EvaluationDetail[]>([])
+  const [draftTitle, setDraftTitle] = useState('')
+  const [draftContent, setDraftContent] = useState('')
+  const [draftSubject, setDraftSubject] = useState('')
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const draftRef = useRef({ title: '', content: '', subject: '' })
+
+  const activeNote = notes.find((n) => n.id === activeNoteId) || notes[0] || null
+
+  useEffect(() => {
+    if (!activeNote) {
+      setDraftTitle('')
+      setDraftContent('')
+      setDraftSubject('')
+      return
+    }
+
+    setDraftTitle(activeNote.title)
+    setDraftContent(activeNote.content)
+    setDraftSubject(activeNote.subject)
+    setSaveState('idle')
+  }, [activeNote?.id])
+
+  useEffect(() => {
+    draftRef.current = {
+      title: draftTitle,
+      content: draftContent,
+      subject: draftSubject,
+    }
+  }, [draftTitle, draftContent, draftSubject])
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current)
+      }
+    }
+  }, [])
+
+  const flushSave = async (noteId: string) => {
+    setSaveState('saving')
+    try {
+      await updateNote(noteId, draftRef.current)
+      setSaveState('saved')
+    } catch {
+      setSaveState('error')
+    }
+  }
+
+  const scheduleSave = (noteId: string) => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current)
+    }
+
+    saveTimerRef.current = setTimeout(() => {
+      void flushSave(noteId)
+    }, 600)
+  }
+
+  const handleDraftChange = (
+    patch: Partial<{ title: string; content: string; subject: string }>,
+    noteId: string,
+  ) => {
+    if (patch.title !== undefined) setDraftTitle(patch.title)
+    if (patch.content !== undefined) setDraftContent(patch.content)
+    if (patch.subject !== undefined) setDraftSubject(patch.subject)
+
+    draftRef.current = {
+      title: patch.title ?? draftRef.current.title,
+      content: patch.content ?? draftRef.current.content,
+      subject: patch.subject ?? draftRef.current.subject,
+    }
+
+    if (!useApi) {
+      void updateNote(noteId, draftRef.current)
+      return
+    }
+
+    scheduleSave(noteId)
+  }
 
   useEffect(() => {
     if (!useApi || !activeNoteId) {
@@ -43,11 +123,6 @@ export function NotionWorkspace() {
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
-
-  // Find active note object
-  const activeNote = notes.find((n) => n.id === activeNoteId) || notes[0] || null
-
-  // Filtered notes list
   const filteredNotes = notes.filter((n) => {
     const matchesSearch =
       n.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -73,10 +148,10 @@ export function NotionWorkspace() {
     navigate(`/concept/new?noteId=${activeNote.id}&topic=${encodeURIComponent(activeNote.title)}`)
   }
 
-  const wordCount = activeNote ? activeNote.content.split(/\s+/).filter(Boolean).length : 0
+  const wordCount = draftContent.split(/\s+/).filter(Boolean).length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e1917] via-[#2a2421] to-[#14100e] text-[#f5efe8]">
+    <div className="theme-page min-h-screen text-[#f5efe8]">
       <Navbar />
 
       <main className="mx-auto max-w-7xl px-4 pt-28 pb-16 sm:px-6">
@@ -246,8 +321,9 @@ export function NotionWorkspace() {
                     </div>
                     <input
                       type="text"
-                      value={activeNote.title}
-                      onChange={(e) => updateNote(activeNote.id, { title: e.target.value })}
+                      value={draftTitle}
+                      onChange={(e) => handleDraftChange({ title: e.target.value }, activeNote.id)}
+                      onBlur={() => void flushSave(activeNote.id)}
                       placeholder="Note Title..."
                       className="w-full bg-transparent text-2xl font-bold text-white outline-none border-b border-white/10 pb-2 focus:border-[#e8c89b]"
                     />
@@ -256,8 +332,8 @@ export function NotionWorkspace() {
                   <div className="flex items-center gap-4 text-xs">
                     <span className="text-white/50 font-semibold">Subject Category:</span>
                     <select
-                      value={activeNote.subject}
-                      onChange={(e) => updateNote(activeNote.id, { subject: e.target.value })}
+                      value={draftSubject}
+                      onChange={(e) => handleDraftChange({ subject: e.target.value }, activeNote.id)}
                       className="glass rounded-xl border border-white/15 px-3 py-1.5 text-xs text-[#e8c89b] font-semibold outline-none"
                     >
                       <option value="Computer Science" className="bg-[#1e1917]">Computer Science</option>
@@ -283,15 +359,20 @@ export function NotionWorkspace() {
                       Notion Markdown Content
                     </span>
                     <span>
-                      {wordCount} Words &bull; {activeNote.content.length} Chars
+                      {wordCount} Words &bull; {draftContent.length} Chars
+                      {useApi && saveState === 'saving' && ' • Saving…'}
+                      {useApi && saveState === 'saved' && ' • Saved'}
+                      {useApi && saveState === 'error' && ' • Save failed'}
                     </span>
                   </div>
 
                   <textarea
                     ref={scrollerRef}
                     rows={16}
-                    value={activeNote.content}
-                    onChange={(e) => updateNote(activeNote.id, { content: e.target.value })}
+                    value={draftContent}
+                    onChange={(e) => handleDraftChange({ content: e.target.value }, activeNote.id)}
+                    onBlur={() => void flushSave(activeNote.id)}
+                    placeholder="Start typing your study notes here..."
                     className="glass w-full rounded-2xl border border-white/15 p-5 text-sm leading-relaxed text-white font-mono placeholder:text-white/30 outline-none focus:border-[#e8c89b]"
                   />
                 </div>

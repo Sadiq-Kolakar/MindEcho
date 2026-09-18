@@ -11,26 +11,18 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (!id.includes('node_modules')) return
-          if (id.includes('@splinetool')) return 'spline'
-          if (id.includes('framer-motion')) return 'motion'
-          if (id.includes('lucide-react')) return 'icons'
-          if (id.includes('react-router')) return 'router'
-          if (id.includes('react-dom') || id.includes('react/')) return 'react'
-        },
-      },
-    },
+    target: 'esnext',
+    chunkSizeWarningLimit: 2000,
   },
   server: {
-    port: 43123,
+    port: 45002,
+    strictPort: true,
     host: true,
     allowedHosts: true,
   },
   preview: {
-    port: 43123,
+    port: 45002,
+    strictPort: true,
     host: true,
     allowedHosts: true,
   },

@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 
 /* shadcn/ui theme tokens — dark mocha & amber gold theme */
-:root {
+:root,
+[data-theme='mocha'] {
   --background: #1e1917;
   --foreground: #f5efe8;
   --card: rgba(255, 255, 255, 0.07);
@@ -15,6 +16,76 @@
   --accent-foreground: #f5efe8;
   --muted: rgba(255, 255, 255, 0.08);
   --destructive-foreground: oklch(1 0 0);
+  --page-gradient: linear-gradient(to bottom right, #1e1917, #2a2421, #14100e);
+  --page-solid: #1e1917;
+  --glass-fill: rgba(38, 30, 27, 0.7);
+  --glass-fill-strong: rgba(42, 34, 30, 0.85);
+  --glass-fill-dark: rgba(25, 20, 18, 0.88);
+  --glass-hover-fill: rgba(48, 38, 34, 0.88);
+  --glass-hover-fill-strong: rgba(52, 41, 36, 0.92);
+  --glass-hover-fill-dark: rgba(35, 28, 25, 0.96);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-hover: rgba(232, 200, 155, 0.5);
+  --glass-inset: rgba(232, 200, 155, 0.12);
+  --glass-glow: rgba(232, 200, 155, 0.18);
+  --btn-gradient: linear-gradient(135deg, #f5e4c6 0%, #e8c89b 50%, #d4b896 100%);
+  --btn-text: #1e1917;
+  --btn-shadow: rgba(232, 200, 155, 0.35);
+  --btn-shadow-hover: rgba(232, 200, 155, 0.55);
+  --theme-accent: #e8c89b;
+  --theme-accent-muted: rgba(232, 200, 155, 0.15);
+  --theme-accent-border: rgba(232, 200, 155, 0.3);
+  --theme-accent-border-hover: rgba(232, 200, 155, 0.5);
+  --theme-panel: #1d1d1a;
+  --theme-well: #252522;
+  --skeleton-shimmer-mid: rgba(232, 200, 155, 0.12);
+}
+
+[data-theme='monochrome'] {
+  --background: #000000;
+  --foreground: #f7f7f7;
+  --card: rgba(255, 255, 255, 0.06);
+  --card-foreground: #f7f7f7;
+  --muted-foreground: #d4d4d4;
+  --border: rgba(255, 255, 255, 0.22);
+  --ring: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --accent: rgba(255, 255, 255, 0.12);
+  --accent-foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.06);
+  --page-gradient: linear-gradient(160deg, #000000 0%, #0a0a0a 45%, #121212 100%);
+  --page-solid: #000000;
+  --glass-fill: rgba(255, 255, 255, 0.05);
+  --glass-fill-strong: rgba(255, 255, 255, 0.08);
+  --glass-fill-dark: rgba(0, 0, 0, 0.82);
+  --glass-hover-fill: rgba(255, 255, 255, 0.1);
+  --glass-hover-fill-strong: rgba(255, 255, 255, 0.14);
+  --glass-hover-fill-dark: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-border-hover: rgba(255, 255, 255, 0.55);
+  --glass-inset: rgba(255, 255, 255, 0.14);
+  --glass-glow: rgba(255, 255, 255, 0.12);
+  --btn-gradient: linear-gradient(135deg, #ffffff 0%, #e8e8e8 50%, #cccccc 100%);
+  --btn-text: #000000;
+  --btn-shadow: rgba(255, 255, 255, 0.2);
+  --btn-shadow-hover: rgba(255, 255, 255, 0.35);
+  --theme-accent: #ffffff;
+  --theme-accent-muted: rgba(255, 255, 255, 0.12);
+  --theme-accent-border: rgba(255, 255, 255, 0.28);
+  --theme-accent-border-hover: rgba(255, 255, 255, 0.55);
+  --theme-panel: #0a0a0a;
+  --theme-well: #111111;
+  --skeleton-shimmer-mid: rgba(255, 255, 255, 0.14);
+
+  --color-gold: #e5e5e5;
+  --color-gold-soft: #ffffff;
+  --color-cream: #0a0a0a;
+  --color-cream-light: #111111;
+  --color-warm-beige: #050505;
+  --color-warm-taupe: #141414;
+  --color-taupe-dark: #000000;
+  --color-charcoal: #080808;
 }
 
 .dark {
@@ -61,46 +132,72 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: #1e1917;
+  background-color: var(--page-solid);
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: #1e1917;
-  color: #f5efe8;
+  background: var(--page-solid);
+  color: var(--foreground);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
+.theme-page {
+  min-height: 100vh;
+  background: var(--page-gradient);
+  color: var(--foreground);
+}
+
+.theme-page-solid {
+  min-height: 100vh;
+  background: var(--page-solid);
+  color: var(--foreground);
+}
+
+.theme-toggle-icon {
+  color: var(--theme-accent);
+}
+
+.theme-toggle-label {
+  color: var(--foreground);
+}
+
+.theme-toggle:hover {
+  background: var(--theme-accent-muted);
+  border-color: var(--theme-accent-border-hover);
+}
+
 .glass {
-  background: rgba(38, 30, 27, 0.7);
+  background: var(--glass-fill);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(232, 200, 155, 0.12);
+    inset 0 1px 0 var(--glass-inset);
 }
 
 .glass-strong {
-  background: rgba(42, 34, 30, 0.85);
+  background: var(--glass-fill-strong);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(232, 200, 155, 0.18);
+    inset 0 1px 0 var(--glass-inset);
 }
 
 .glass-dark {
-  background: rgba(25, 20, 18, 0.88);
+  background: var(--glass-fill-dark);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--glass-border);
   box-shadow:
     0 12px 36px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(232, 200, 155, 0.12);
+    inset 0 1px 0 var(--glass-inset);
 }
 
 .glass-hover {
@@ -109,30 +206,30 @@ body {
 
 .glass-hover:hover {
   transform: translateY(-4px) scale(1.012);
-  border-color: rgba(232, 200, 155, 0.5);
+  border-color: var(--glass-border-hover);
   box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.6),
-    0 0 30px rgba(232, 200, 155, 0.18),
-    inset 0 1px 0 rgba(232, 200, 155, 0.25);
+    0 0 30px var(--glass-glow),
+    inset 0 1px 0 var(--glass-inset);
 }
 
 .glass.glass-hover:hover {
-  background: rgba(48, 38, 34, 0.88);
+  background: var(--glass-hover-fill);
 }
 
 .glass-dark.glass-hover:hover {
-  background: rgba(35, 28, 25, 0.96);
+  background: var(--glass-hover-fill-dark);
 }
 
 .glass-strong.glass-hover:hover {
-  background: rgba(52, 41, 36, 0.92);
+  background: var(--glass-hover-fill-strong);
 }
 
 .btn-glow {
-  background: linear-gradient(135deg, #f5e4c6 0%, #e8c89b 50%, #d4b896 100%);
-  color: #1e1917;
+  background: var(--btn-gradient);
+  color: var(--btn-text);
   box-shadow:
-    0 4px 20px rgba(232, 200, 155, 0.35),
+    0 4px 20px var(--btn-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: all 0.3s ease;
 }
@@ -140,7 +237,7 @@ body {
 .btn-glow:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 8px 32px rgba(232, 200, 155, 0.55),
+    0 8px 32px var(--btn-shadow-hover),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
@@ -218,13 +315,13 @@ body {
 }
 
 .mat-panel {
-  background: var(--panel, #1d1d1a);
+  background: var(--theme-panel);
   border: 1px solid var(--hairline, rgba(255, 255, 255, 0.14));
   box-shadow: var(--shadow-lift);
 }
 
 .mat-well {
-  background: var(--well, #252522);
+  background: var(--theme-well);
   box-shadow: var(--shadow-well);
 }
 
@@ -242,13 +339,13 @@ body {
 }
 
 .page-enter {
-  animation: page-enter 0.28s ease-out both;
+  animation: page-enter 0.18s ease-out both;
 }
 
 @keyframes page-enter {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    opacity: 0.92;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -260,5 +357,121 @@ body {
   .page-enter {
     animation: none;
   }
+
+  .skeleton-shimmer::after {
+    animation: none;
+  }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    var(--skeleton-shimmer-mid),
+    transparent
+  );
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.spline-robot-viewport {
+  contain: layout paint size style;
+  isolation: isolate;
+}
+
+.spline-robot-viewport canvas {
+  display: block !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+/* Monochrome remaps for legacy hardcoded mocha/gold utility classes */
+[data-theme='monochrome'] .text-\[\#e8c89b\],
+[data-theme='monochrome'] .text-\[\#d4b896\],
+[data-theme='monochrome'] .hover\:text-\[\#e8c89b\]:hover {
+  color: #ffffff !important;
+}
+
+[data-theme='monochrome'] .text-\[\#f5efe8\],
+[data-theme='monochrome'] .text-\[\#f5efe8\]\/80,
+[data-theme='monochrome'] .text-\[\#f5efe8\]\/85 {
+  color: #f7f7f7 !important;
+}
+
+[data-theme='monochrome'] .bg-\[\#e8c89b\]\/15,
+[data-theme='monochrome'] .hover\:bg-\[\#e8c89b\]\/15:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+[data-theme='monochrome'] .bg-\[\#e8c89b\]\/30,
+[data-theme='monochrome'] .border-\[\#e8c89b\]\/30,
+[data-theme='monochrome'] .border-\[\#e8c89b\]\/40 {
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+[data-theme='monochrome'] .bg-\[\#e8c89b\]\/30 {
+  background-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+[data-theme='monochrome'] .border-\[\#e8c89b\]\/50,
+[data-theme='monochrome'] .hover\:border-\[\#e8c89b\]\/50:hover {
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+[data-theme='monochrome'] .bg-\[\#1e1917\],
+[data-theme='monochrome'] .bg-\[\#1e1917\]\/85,
+[data-theme='monochrome'] .bg-\[\#1e1917\]\/90 {
+  background-color: rgba(0, 0, 0, 0.94) !important;
+}
+
+[data-theme='monochrome'] .hover\:bg-\[\#251e1b\]:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='monochrome'] .bg-\[\#e8c89b\] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+[data-theme='monochrome'] .from-\[\#1e1917\] {
+  --tw-gradient-from: #000000 !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+[data-theme='monochrome'] .via-\[\#2a2421\] {
+  --tw-gradient-via: #0a0a0a !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to) !important;
+}
+
+[data-theme='monochrome'] .to-\[\#14100e\] {
+  --tw-gradient-to: #121212 !important;
+}
+
+[data-theme='monochrome'] .bg-gradient-to-br.from-\[\#1e1917\].via-\[\#2a2421\].to-\[\#14100e\],
+[data-theme='monochrome'] .theme-page {
+  background: var(--page-gradient) !important;
+}
+
+[data-theme='monochrome'] .theme-glow-radial {
+  background-image: radial-gradient(
+    circle at 30% 40%,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 50%
+  ) !important;
 }
 
