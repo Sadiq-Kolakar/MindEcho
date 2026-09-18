@@ -1,0 +1,17 @@
+MemoRoute - Quick Setup
+=======================
+
+1. Unzip the folder
+2. Open terminal in the project folder
+3. Run:
+   npm install
+   npm run dev
+4. Open in browser: http://localhost:43123
+
+Pages:
+  /          - Homepage
+  /login     - Login (any email/password works)
+  /dashboard - Draggable learning dashboard
+  /llm-payment - LLM payment placeholder
+
+Requirements: Node.js 18+ and npm
