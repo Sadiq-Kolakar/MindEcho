@@ -3,10 +3,20 @@ import { ImportantDate } from '../../models/ImportantDate.js'
 import { Note, type NoteDocument } from '../../models/Note.js'
 import { User } from '../../models/User.js'
 import { applyReviewAfterEvaluation, type CalendarContext } from '../analytics/spaced-repetition.service.js'
+import {
+  buildNoteEmbeddingText,
+  embedText,
+  rankBySimilarity,
+} from '../../shared/ai/embedding.service.js'
+import {
+  createPracticeQuestionId,
+  generatePracticeQuestionsFromContent,
+} from '../../shared/ai/practice-questions.service.js'
+import { env } from '../../config/env.js'
 import { ApiError } from '../../shared/utils/api-error.js'
 import { fromPublicNoteId, toPublicNoteId } from '../../shared/utils/note-id.js'
 import { fromPublicUserId } from '../../shared/utils/user-id.js'
-import type { CreateNoteBody, ListNotesQuery, UpdateNoteBody } from './notes.schemas.js'
+import type { CreateNoteBody, ListNotesQuery, NoteResponse, UpdateNoteBody } from './notes.schemas.js'
 import { serializeNote } from './notes.serializer.js'
 
 function parseDateOnly(value: string): Date {
@@ -26,6 +36,44 @@ async function findOwnedNote(userId: string, noteId: string): Promise<NoteDocume
   return note
 }
 
+async function syncNoteEmbedding(note: NoteDocument): Promise<void> {
+  if (!env.EMBEDDING_ENABLED && env.NODE_ENV !== 'test') {
+    return
+  }
+
+  const embedding = await embedText(
+    buildNoteEmbeddingText(note.title, note.subject, note.content),
+  )
+
+  note.embedding = embedding
+  note.embeddingModel = env.OPENAI_EMBEDDING_MODEL
+  note.embeddedAt = new Date()
+  await note.save()
+}
+
+async function semanticSearchNotes(
+  publicUserId: string,
+  query: ListNotesQuery,
+): Promise<NoteResponse[]> {
+  const filter: Record<string, unknown> = {
+    userId: fromPublicUserId(publicUserId),
+  }
+
+  if (query.subject) {
+    filter.subject = query.subject
+  }
+
+  const notes = await Note.find(filter).select('+embedding')
+  const queryEmbedding = await embedText(query.search ?? '')
+  const ranked = rankBySimilarity(notes, queryEmbedding, query.minScore)
+
+  const skip = (query.page - 1) * query.limit
+  return ranked.slice(skip, skip + query.limit).map((note) => ({
+    ...serializeNote(note),
+    similarity: Number(note.similarity.toFixed(3)),
+  }))
+}
+
 export async function listNotes(publicUserId: string, query: ListNotesQuery) {
   const filter: Record<string, unknown> = {
     userId: fromPublicUserId(publicUserId),
@@ -33,6 +81,10 @@ export async function listNotes(publicUserId: string, query: ListNotesQuery) {
 
   if (query.subject) {
     filter.subject = query.subject
+  }
+
+  if (query.search && query.searchMode === 'semantic') {
+    return semanticSearchNotes(publicUserId, query)
   }
 
   if (query.search) {
@@ -68,6 +120,8 @@ export async function createNote(publicUserId: string, input: CreateNoteBody) {
     nextReviewDate: tomorrow,
   })
 
+  await syncNoteEmbedding(note)
+
   return serializeNote(note)
 }
 
@@ -97,6 +151,13 @@ export async function updateNote(publicUserId: string, noteId: string, input: Up
 
   if (!note) {
     throw new ApiError(404, 'NOTE_NOT_FOUND', `Note with id ${noteId} not found`)
+  }
+
+  const contentChanged =
+    input.title !== undefined || input.subject !== undefined || input.content !== undefined
+
+  if (contentChanged) {
+    await syncNoteEmbedding(note)
   }
 
   return serializeNote(note)
@@ -188,4 +249,105 @@ export async function deleteNote(publicUserId: string, noteId: string) {
     success: true,
     deletedId: toPublicNoteId(fromPublicNoteId(noteId)),
   }
+}
+
+export async function reindexNoteEmbeddings(publicUserId: string) {
+  const notes = await Note.find({ userId: fromPublicUserId(publicUserId) })
+
+  let updated = 0
+  for (const note of notes) {
+    await syncNoteEmbedding(note)
+    updated += 1
+  }
+
+  return {
+    success: true,
+    updated,
+  }
+}
+
+export async function generatePracticeQuestionsForNote(
+  publicUserId: string,
+  noteId: string,
+  input: { count?: number; append?: boolean },
+) {
+  const note = await findOwnedNote(publicUserId, noteId)
+  const count = input.count ?? 4
+  const append = input.append ?? false
+  const existing = append ? (note.practiceQuestions ?? []) : []
+
+  const generated = await generatePracticeQuestionsFromContent(
+    note.title,
+    note.subject,
+    note.content,
+    {
+      count,
+      existingQuestions: existing.map((item) => item.question),
+    },
+  )
+
+  const nextQuestions = generated.map((item) => ({
+    id: createPracticeQuestionId(),
+    question: item.question,
+    adopted: true,
+    source: 'ai' as const,
+  }))
+
+  note.practiceQuestions = append ? [...existing, ...nextQuestions] : nextQuestions
+  await note.save()
+
+  return serializeNote(note)
+}
+
+export async function addPracticeQuestionToNote(
+  publicUserId: string,
+  noteId: string,
+  question: string,
+) {
+  const note = await findOwnedNote(publicUserId, noteId)
+
+  note.practiceQuestions = [
+    ...(note.practiceQuestions ?? []),
+    {
+      id: createPracticeQuestionId(),
+      question,
+      adopted: true,
+      source: 'user',
+    },
+  ]
+
+  await note.save()
+  return serializeNote(note)
+}
+
+export async function updatePracticeQuestionOnNote(
+  publicUserId: string,
+  noteId: string,
+  questionId: string,
+  updates: { adopted?: boolean; score?: number },
+) {
+  const note = await findOwnedNote(publicUserId, noteId)
+  const question = (note.practiceQuestions ?? []).find((item) => item.id === questionId)
+
+  if (!question) {
+    throw new ApiError(404, 'QUESTION_NOT_FOUND', `Practice question ${questionId} not found`)
+  }
+
+  if (updates.adopted !== undefined) question.adopted = updates.adopted
+  if (updates.score !== undefined) {
+    question.score = updates.score
+    question.lastAnsweredAt = new Date()
+  }
+
+  await note.save()
+  return serializeNote(note)
+}
+
+export async function scorePracticeQuestionOnNote(
+  publicUserId: string,
+  noteId: string,
+  questionId: string,
+  score: number,
+) {
+  return updatePracticeQuestionOnNote(publicUserId, noteId, questionId, { score })
 }
