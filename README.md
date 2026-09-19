@@ -317,14 +317,15 @@ The included `docker-compose.yml` spins up required local dependencies:
 
 ---
 
-## 👥 Team & Acknowledgments
+## 👥Team & Acknowledgments
 
-**Team: All Six Not Found**  
+**Team: All Six Not Found**
 *SIH 2026 Hackathon Project*
 
-- Built with ❤️ using modern web performance and cognitive neuroscience principles.
-- Special thanks to the open-source community behind React, Fastify, SuperMemo algorithms, and Vite.
+- Built with modern web performance and cognitive neuroscience principles in mind.
+- Special thanks to the open-source community behind React, TypeScript, Vite, Tailwind CSS, Fastify, Node.js, MongoDB, Mongoose, Redis, and Docker.
+- Grateful to the researchers behind the SuperMemo SM-2 algorithm and Hermann Ebbinghaus's Forgetting Curve research, which underpin our spaced repetition engine.
 
 ---
 
-<p align="center">Made with 🧠 MindEcho — Empowering learners to master anything through active recall.</p>
+<p align="center">Made with MindEcho — Empowering learners to master anything through active recall.</p>
