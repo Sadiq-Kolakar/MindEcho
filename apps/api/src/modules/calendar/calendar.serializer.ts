@@ -31,8 +31,12 @@ export function serializeImportantDate(date: ImportantDateDocument): ImportantDa
     id: toPublicDateId(date._id),
     title: date.title,
     date: formatDateOnly(date.date),
+    ...(date.time ? { time: date.time } : {}),
     subject: date.subject,
     priority: date.priority as ImportantDateResponse['priority'],
     ...(date.description ? { description: date.description } : {}),
+    reminderEnabled: date.reminderEnabled ?? false,
+    reminderMinutesBefore: date.reminderMinutesBefore ?? 30,
+    emailReminderSent: date.emailReminderSent ?? false,
   }
 }

@@ -11,9 +11,23 @@ export const updateSettingsBodySchema = z.object({
 export const createImportantDateBodySchema = z.object({
   title: z.string().trim().min(1).max(200),
   date: dateStringSchema,
+  time: z.string().trim().max(10).optional(),
   subject: z.string().trim().min(1).max(120),
   priority: z.enum(['high', 'medium', 'low']).default('medium'),
   description: z.string().trim().max(500).optional(),
+  reminderEnabled: z.boolean().optional().default(false),
+  reminderMinutesBefore: z
+    .union([
+      z.literal(5),
+      z.literal(10),
+      z.literal(15),
+      z.literal(30),
+      z.literal(60),
+      z.literal(1440),
+    ])
+    .optional()
+    .default(30),
+  emailReminderSent: z.boolean().optional().default(false),
 })
 
 export const updateImportantDateBodySchema = createImportantDateBodySchema.partial().refine(
@@ -41,7 +55,11 @@ export interface ImportantDateResponse {
   id: string
   title: string
   date: string
+  time?: string
   subject: string
   priority: 'high' | 'medium' | 'low'
   description?: string
+  reminderEnabled: boolean
+  reminderMinutesBefore: number
+  emailReminderSent: boolean
 }

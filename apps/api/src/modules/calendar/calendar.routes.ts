@@ -73,4 +73,36 @@ export async function calendarRoutes(app: FastifyInstance): Promise<void> {
     const result = await deleteImportantDate(request.user!.id, id)
     return reply.send(result)
   })
+
+  // Dedicated Reminders API aliases
+  app.get(
+    '/reminders',
+    { preHandler: [authGuard, validateQuery(listImportantDatesQuerySchema)] },
+    async (request, reply) => {
+      const query = request.query as ListImportantDatesQuery
+      const dates = await listImportantDates(request.user!.id, query)
+      return reply.send(dates)
+    },
+  )
+
+  app.post(
+    '/reminders',
+    { preHandler: [authGuard, validateBody(createImportantDateBodySchema)] },
+    async (request, reply) => {
+      const body = request.body as CreateImportantDateBody
+      const date = await createImportantDate(request.user!.id, body)
+      return reply.status(201).send(date)
+    },
+  )
+
+  app.patch(
+    '/reminders/:id',
+    { preHandler: [authGuard, validateBody(updateImportantDateBodySchema)] },
+    async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const body = request.body as UpdateImportantDateBody
+      const date = await updateImportantDate(request.user!.id, id, body)
+      return reply.send(date)
+    },
+  )
 }

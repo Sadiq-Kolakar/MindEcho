@@ -1,4 +1,5 @@
 import cron from 'node-cron'
+import { runCalendarReminderJob } from './jobs/calendar-reminder.job.js'
 import { runDueReviewReminderJob } from './jobs/due-review-reminder.job.js'
 import { runRetentionDecayJob } from './jobs/retention-decay.job.js'
 import { runUsageResetJob } from './jobs/usage-reset.job.js'
@@ -27,9 +28,18 @@ export function startWorkerScheduler(logger: Pick<Console, 'info' | 'error'> = c
           logger.error({ job: 'due-review-reminder', error }, 'Due review reminder job failed'),
         )
     }),
+    cron.schedule('* * * * *', () => {
+      void runCalendarReminderJob()
+        .then((result) =>
+          logger.info({ job: 'calendar-reminder', ...result }, 'Calendar reminder job completed'),
+        )
+        .catch((error) =>
+          logger.error({ job: 'calendar-reminder', error }, 'Calendar reminder job failed'),
+        )
+    }),
   ]
 
-  logger.info('Worker scheduler started (retention-decay + usage-reset at 00:00 UTC, reminders at 08:00 UTC)')
+  logger.info('Worker scheduler started (retention-decay + usage-reset at 00:00 UTC, reminders at 08:00 UTC, calendar-reminders every minute)')
 
   return {
     stop: () => {

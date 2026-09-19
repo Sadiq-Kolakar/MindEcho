@@ -41,6 +41,10 @@ const envSchema = z.object({
     .transform((v) => v === 'true'),
   NOTIFICATION_PROVIDER: z.enum(['mock', 'email']).default('mock'),
   AUDIO_STORAGE: z.enum(['local', 's3']).default('local'),
+  GOOGLE_CLIENT_ID: z.string().optional().default('mock-google-client-id'),
+  GOOGLE_CLIENT_SECRET: z.string().optional().default('mock-google-client-secret'),
+  GOOGLE_REDIRECT_URI: z.string().default('http://localhost:3000/api/v1/gmail/callback'),
+  OAUTH_ENCRYPTION_KEY: z.string().default('mindecho-oauth-encryption-key-32b!'),
 })
 
 const parsed = envSchema.safeParse(process.env)

@@ -5,14 +5,23 @@ const importantDateSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     title: { type: String, required: true, trim: true },
     date: { type: Date, required: true },
+    time: { type: String, trim: true },
     subject: { type: String, required: true, trim: true },
     priority: { type: String, enum: ['high', 'medium', 'low'], default: 'medium' },
     description: { type: String, trim: true },
+    reminderEnabled: { type: Boolean, default: false },
+    reminderMinutesBefore: {
+      type: Number,
+      enum: [5, 10, 15, 30, 60, 1440],
+      default: 30,
+    },
+    emailReminderSent: { type: Boolean, default: false },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 )
 
 importantDateSchema.index({ userId: 1, date: 1 })
+importantDateSchema.index({ reminderEnabled: 1, emailReminderSent: 1, date: 1 })
 
 export type ImportantDateDocument = InferSchemaType<typeof importantDateSchema> & {
   _id: Types.ObjectId

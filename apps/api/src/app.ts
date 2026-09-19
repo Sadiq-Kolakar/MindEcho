@@ -11,6 +11,7 @@ import { authModule } from './modules/auth/index.js'
 import { billingModule } from './modules/billing/index.js'
 import { calendarModule } from './modules/calendar/index.js'
 import { evaluationsModule } from './modules/evaluations/index.js'
+import { gmailModule } from './modules/gmail/index.js'
 import { healthRoutes } from './modules/health/health.routes.js'
 import { notesModule } from './modules/notes/index.js'
 import { notificationsModule } from './modules/notifications/index.js'
@@ -68,6 +69,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(notificationsModule)
   await app.register(usersModule)
   await app.register(analyticsModule)
+  await app.register(gmailModule)
 
   app.get('/api/v1', async () => ({
     name: 'LECTOR API',

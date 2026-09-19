@@ -18,6 +18,16 @@ const notificationSettingsSchema = new Schema(
   { _id: false },
 )
 
+const gmailAuthSchema = new Schema(
+  {
+    googleAccessToken: { type: String },
+    googleRefreshToken: { type: String },
+    googleEmail: { type: String, lowercase: true, trim: true },
+    connectedAt: { type: Date },
+  },
+  { _id: false },
+)
+
 const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
@@ -30,6 +40,9 @@ const userSchema = new Schema(
     notificationSettings: {
       type: notificationSettingsSchema,
       default: () => ({ emailEnabled: false, pushEnabled: false, inAppEnabled: true }),
+    },
+    gmailAuth: {
+      type: gmailAuthSchema,
     },
   },
   { timestamps: true },

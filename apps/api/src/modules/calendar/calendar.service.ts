@@ -108,9 +108,13 @@ export async function createImportantDate(
     userId: fromPublicUserId(publicUserId),
     title: input.title,
     date: parseDateOnly(input.date),
+    time: input.time,
     subject: input.subject,
     priority: input.priority,
     description: input.description,
+    reminderEnabled: input.reminderEnabled ?? false,
+    reminderMinutesBefore: input.reminderMinutesBefore ?? 30,
+    emailReminderSent: false,
   })
 
   return serializeImportantDate(item)
@@ -126,9 +130,16 @@ export async function updateImportantDate(
   const updates: Record<string, unknown> = {}
   if (input.title !== undefined) updates.title = input.title
   if (input.date !== undefined) updates.date = parseDateOnly(input.date)
+  if (input.time !== undefined) updates.time = input.time
   if (input.subject !== undefined) updates.subject = input.subject
   if (input.priority !== undefined) updates.priority = input.priority
   if (input.description !== undefined) updates.description = input.description
+  if (input.reminderEnabled !== undefined) updates.reminderEnabled = input.reminderEnabled
+  if (input.reminderMinutesBefore !== undefined) updates.reminderMinutesBefore = input.reminderMinutesBefore
+
+  if (input.date !== undefined || input.time !== undefined || input.reminderMinutesBefore !== undefined || input.reminderEnabled !== undefined) {
+    updates.emailReminderSent = false
+  }
 
   const item = await ImportantDate.findOneAndUpdate(
     {
