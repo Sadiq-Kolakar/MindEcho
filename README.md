@@ -1,4 +1,4 @@
-# MemoRoute (LECTOR / MindEcho) 🧠⚡
+# MindEcho
 
 > **Adaptive Spaced Retention & Feynman Learning Platform**  
 > *Developed for SIH 2026 — Team: All Six Not Found*
@@ -33,9 +33,9 @@
 
 ## 💡 Executive Product Overview
 
-**MemoRoute (LECTOR / MindEcho)** is an intelligent cognitive learning ecosystem designed to eliminate the **Illusion of Competence**—the phenomenon where passive reading creates a false sense of mastery, only for memory to rapidly decay following Hermann Ebbinghaus's Forgetting Curve.
+**MindEcho (LECTOR / MindEcho)** is an intelligent cognitive learning ecosystem designed to eliminate the **Illusion of Competence**—the phenomenon where passive reading creates a false sense of mastery, only for memory to rapidly decay following Hermann Ebbinghaus's Forgetting Curve.
 
-By synthesizing the **Feynman Technique** (explaining complex concepts in simple terms) with an **Adaptive Spaced Repetition Engine (SuperMemo SM-2)**, MemoRoute transforms passive study into active recall and lifelong mastery.
+By synthesizing the **Feynman Technique** (explaining complex concepts in simple terms) with an **Adaptive Spaced Repetition Engine (SuperMemo SM-2)**, MindEcho transforms passive study into active recall and lifelong mastery.
 
 ### The Problem
 - **Passive Memory Decay**: Learners lose up to 70% of new knowledge within 24 hours without structured active recall.
@@ -112,7 +112,7 @@ $$C = \min\left(1.0, \, \frac{T_{\text{exam}} - T_{\text{current}}}{\sum I(n)}\r
 The project is structured as an `npm` monorepo workspace:
 
 ```text
-memoroute/
+MindEcho/
 ├── apps/
 │   ├── web/                    # Frontend React 19 SPA (Vite + Tailwind v4)
 │   │   ├── src/
@@ -327,4 +327,4 @@ The included `docker-compose.yml` spins up required local dependencies:
 
 ---
 
-<p align="center">Made with 🧠 MemoRoute — Empowering learners to master anything through active recall.</p>
+<p align="center">Made with 🧠 MindEcho — Empowering learners to master anything through active recall.</p>
